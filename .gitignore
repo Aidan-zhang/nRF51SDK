@@ -1,0 +1,17 @@
+#ignore thumbnails created by windows
+Thumbs.db
+
+#vim
+.*.sw?
+*~
+
+#binary
+*.png
+_build/*
+
+#gcc
+*.o
+*.hex
+*.out
+*.bin
+
