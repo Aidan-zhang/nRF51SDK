@@ -15,9 +15,13 @@ _build/*
 *.hex
 *.out
 *.bin
+*.lst
+*.sct
 
 #jlink & error
 JLinkLog.txt
 *.dep
 *.d
 *.crf
+*.build_log.htm
+*.tdwebste
