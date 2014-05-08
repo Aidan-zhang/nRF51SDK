@@ -4,6 +4,7 @@ Thumbs.db
 #vim
 .*.sw?
 *~
+*.bak
 
 #binary
 *.png
@@ -15,3 +16,8 @@ _build/*
 *.out
 *.bin
 
+#jlink & error
+JLinkLog.txt
+*.dep
+*.d
+*.crf
