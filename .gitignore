@@ -28,3 +28,4 @@ JLinkLog.txt
 *.axf
 *.lnp
 *.map
+_build
