@@ -25,3 +25,6 @@ JLinkLog.txt
 *.crf
 *.build_log.htm
 *.tdwebste
+*.axf
+*.lnp
+*.map
