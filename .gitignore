@@ -7,7 +7,6 @@ Thumbs.db
 *.bak
 
 #binary
-*.png
 _build/*
 
 #gcc
