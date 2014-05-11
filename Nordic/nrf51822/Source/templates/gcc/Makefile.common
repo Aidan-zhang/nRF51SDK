@@ -5,11 +5,12 @@ SDK_INCLUDE_PATH = $(SDK_PATH)/Include/
 SDK_SOURCE_PATH = $(SDK_PATH)/Source/
 TEMPLATE_PATH += $(SDK_SOURCE_PATH)/templates/gcc/
 OUTPUT_BINARY_DIRECTORY := _build
+GNU_PREFIX := arm-none-eabi
 
 #ifeq ($(OS),Windows_NT)
 include $(TEMPLATE_PATH)Makefile.windows
 #else
-#include $(TEMPLATE_PATH)Makefile.posix
+include $(TEMPLATE_PATH)Makefile.posix
 #endif
 
 ifeq ($(LINKER_SCRIPT),)
@@ -57,7 +58,8 @@ LDFLAGS += -mcpu=$(CPU) -mthumb -mabi=aapcs -L $(TEMPLATE_PATH) -T$(LINKER_SCRIP
 
 # Compiler flags
 CFLAGS += -mcpu=$(CPU) -mthumb -mabi=aapcs -D$(DEVICE) -D$(BOARD) -D$(TARGET_CHIP) --std=gnu99
-CFLAGS += -Wall -Werror
+#CFLAGS += -Wall -Werror
+CFLAGS += -Wall 
 CFLAGS += -mfloat-abi=soft
 
 # Assembler flags
