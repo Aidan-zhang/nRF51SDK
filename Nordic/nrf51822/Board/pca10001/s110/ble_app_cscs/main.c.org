@@ -48,19 +48,12 @@
 #include "ble_debug_assert_handler.h"
 #include "pstorage.h"
 
-//#include "led.h"
-//#include "battery.h"
-//#include "app_gpiote.h"
-//#include "app_button.h"
-
-#define HR_INC_BUTTON_PIN_NO                 BUTTON_0                                  /**< Button used to increment heart rate. */
-#define HR_DEC_BUTTON_PIN_NO                 BUTTON_1                                  /**< Button used to decrement heart rate. */
-#define WAKEUP_BUTTON_PIN        	     HR_INC_BUTTON_PIN_NO  
-#define BONDMNGR_DELETE_BUTTON_PIN_NO        HR_DEC_BUTTON_PIN_NO  
+#define WAKEUP_BUTTON_PIN                    BUTTON_0                                   /**< Button used to wake up the application. */
+#define BONDMNGR_DELETE_BUTTON_PIN_NO        BUTTON_1                                   /**< Button used for deleting all bonded centrals during startup. */
 
 #define ADVERTISING_LED_PIN_NO               LED_0                                      /**< Is on when device is advertising. */
 #define CONNECTED_LED_PIN_NO                 LED_1                                      /**< Is on when device has connected. */
-//#define ASSERT_LED_PIN_NO                    LED_7                                      /**< Is on when application has asserted. */
+#define ASSERT_LED_PIN_NO                    LED_7                                      /**< Is on when application has asserted. */
 
 #define DEVICE_NAME                          "Nordic_CSC"                               /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME                    "NordicSemiconductor"                      /**< Manufacturer. Will be passed to Device Information Service. */
@@ -158,7 +151,7 @@ void pstorage_sys_event_handler(uint32_t sys_evt);
  */
 void app_error_handler(uint32_t error_code, uint32_t line_num, const uint8_t * p_file_name)
 {
-//    nrf_gpio_pin_set(ASSERT_LED_PIN_NO);
+    nrf_gpio_pin_set(ASSERT_LED_PIN_NO);
 
     // This call can be used for debug purposes during application development.
     // @note CAUTION: Activating this code will write the stack to flash on an error.
@@ -326,7 +319,7 @@ static void leds_init(void)
 {
     nrf_gpio_cfg_output(ADVERTISING_LED_PIN_NO);
     nrf_gpio_cfg_output(CONNECTED_LED_PIN_NO);
-//    nrf_gpio_cfg_output(ASSERT_LED_PIN_NO);
+    nrf_gpio_cfg_output(ASSERT_LED_PIN_NO);
 }
 
 
