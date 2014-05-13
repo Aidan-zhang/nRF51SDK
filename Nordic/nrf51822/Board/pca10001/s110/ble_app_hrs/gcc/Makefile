@@ -43,5 +43,9 @@ DEVICE_VARIANT := xxaa
 USE_SOFTDEVICE := S110
 #USE_SOFTDEVICE := s210
 
+CFLAGS = -Os
+
+GDB_PORT_NUMBER = 2331
+
 include $(SDK_PATH)Source/templates/gcc/Makefile.common
 
