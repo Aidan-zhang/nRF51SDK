@@ -82,14 +82,14 @@
 #define KPH_TO_MM_PER_SEC                    278                                        /**< Constant to convert kilometers per hour into millimeters per second. */
 
 #define MIN_SPEED_KPH                        10                                         /**< Minimum speed in kilometers per hour for use in the simulated measurement function. */
-#define MAX_SPEED_KPH                        40                                         /**< Maximum speed in kilometers per hour for use in the simulated measurement function. */
+#define MAX_SPEED_KPH                        80                                         /**< Maximum speed in kilometers per hour for use in the simulated measurement function. */
 #define SPEED_KPH_INCREMENT                  1                                          /**< Value by which speed is incremented/decremented for each call to the simulated measurement function. */
 
 #define DEGREES_PER_REVOLUTION               360                                        /**< Constant used in simulation for calculating crank speed. */
 #define RPM_TO_DEGREES_PER_SEC               6                                          /**< Constant to convert revolutions per minute into degrees per second. */
 
 #define MIN_CRANK_RPM                        20                                         /**< Minimum cadence in RPM for use in the simulated measurement function. */
-#define MAX_CRANK_RPM                        110                                        /**< Maximum cadence in RPM for use in the simulated measurement function. */
+#define MAX_CRANK_RPM                        150                                        /**< Maximum cadence in RPM for use in the simulated measurement function. */
 #define CRANK_RPM_INCREMENT                  3                                          /**< Value by which cadence is incremented/decremented in the simulated measurement function. */
 
 #define MIN_CONN_INTERVAL                    MSEC_TO_UNITS(500, UNIT_1_25_MS)           /**< Minimum acceptable connection interval (0.5 seconds). */
@@ -257,7 +257,7 @@ static void csc_sim_measurement(ble_cscs_meas_t * p_measurement)
         event_time + (event_time_inc * (mm_per_sec - wheel_revolution_mm) / mm_per_sec);
 
     // Calculate simulated cadence values.
-    p_measurement->is_crank_rev_data_present = true;
+    p_measurement->is_crank_rev_data_present = false;
 
     degrees_per_sec = RPM_TO_DEGREES_PER_SEC * ble_sensorsim_measure(&m_crank_rpm_sim_state,
                                                                      &m_crank_rpm_sim_cfg);
@@ -466,7 +466,11 @@ static void services_init(void)
     memset(&cscs_init, 0, sizeof(cscs_init));
 
     cscs_init.evt_handler = NULL;
-    cscs_init.feature     = BLE_CSCS_FEATURE_WHEEL_REV_BIT | BLE_CSCS_FEATURE_CRANK_REV_BIT | BLE_CSCS_FEATURE_MULTIPLE_SENSORS_BIT;
+
+// SET CSCS Features to Use
+   // cscs_init.feature     = BLE_CSCS_FEATURE_WHEEL_REV_BIT;
+   cscs_init.feature     = BLE_CSCS_FEATURE_WHEEL_REV_BIT | BLE_CSCS_FEATURE_MULTIPLE_SENSORS_BIT;
+   //cscs_init.feature     = BLE_CSCS_FEATURE_WHEEL_REV_BIT | BLE_CSCS_FEATURE_CRANK_REV_BIT | BLE_CSCS_FEATURE_MULTIPLE_SENSORS_BIT;
 
     // Here the sec level for the Cycling Speed and Cadence Service can be changed/increased.
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cscs_init.csc_meas_attr_md.cccd_write_perm);    // for the measurement characteristic, only the CCCD write permission can be set by the application, others are mandated by service specification
