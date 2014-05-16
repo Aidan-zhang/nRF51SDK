@@ -374,11 +374,10 @@ static void gap_params_init(void)
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 
     err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)deviceaddr_name, strlen(deviceaddr_name));
-    //err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)DEVICE_NAME, strlen(DEVICE_NAME));
 
     APP_ERROR_CHECK(err_code);
 
-    err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_CYCLING_SPEED_CADENCE_SENSOR);
+    err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_CYCLING_SPEED_SENSOR);
     APP_ERROR_CHECK(err_code);
 
     memset(&gap_conn_params, 0, sizeof(gap_conn_params));
@@ -476,13 +475,9 @@ static void services_init(void)
     cscs_init.evt_handler = NULL;
 
 // SET CSCS Features to Use
-   //cscs_init.feature     = BLE_CSCS_FEATURE_WHEEL_REV_BIT;
-   cscs_init.feature     = BLE_CSCS_FEATURE_WHEEL_REV_BIT | BLE_CSCS_FEATURE_MULTIPLE_SENSORS_BIT;
+   cscs_init.feature       = BLE_CSCS_FEATURE_WHEEL_REV_BIT;
    //cscs_init.feature     = BLE_CSCS_FEATURE_WHEEL_REV_BIT | BLE_CSCS_FEATURE_CRANK_REV_BIT | BLE_CSCS_FEATURE_MULTIPLE_SENSORS_BIT;
    
-   //cscs_init.feature     = BLE_CSCS_FEATURE_CRANK_REV_BIT;
-   //cscs_init.feature     = BLE_CSCS_FEATURE_CRANK_REV_BIT | BLE_CSCS_FEATURE_MULTIPLE_SENSORS_BIT;
-
     // Here the sec level for the Cycling Speed and Cadence Service can be changed/increased.
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cscs_init.csc_meas_attr_md.cccd_write_perm);    // for the measurement characteristic, only the CCCD write permission can be set by the application, others are mandated by service specification
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cscs_init.csc_feature_attr_md.read_perm);       // for the feature characteristic, only the read permission can be set by the application, others are mandated by service specification

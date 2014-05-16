@@ -62,7 +62,7 @@
 #define CONNECTED_LED_PIN_NO                 LED_1                                      /**< Is on when device has connected. */
 //#define ASSERT_LED_PIN_NO                    LED_7                                      /**< Is on when application has asserted. */
 
-#define DEVICE_NAME                          "VC5SEA"                               /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                          "VC5HUB"                               /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME                    "NordicSemiconductor"                      /**< Manufacturer. Will be passed to Device Information Service. */
 #define APP_ADV_INTERVAL                     40                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 25 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS           180                                        /**< The advertising timeout in units of seconds. */
@@ -243,7 +243,7 @@ static void csc_sim_measurement(ble_cscs_meas_t * p_measurement)
     event_time_inc = (1024 * SPEED_AND_CADENCE_MEAS_INTERVAL) / 1000;
 
     // Calculate simulated wheel revolution values.
-    p_measurement->is_wheel_rev_data_present = false;
+    p_measurement->is_wheel_rev_data_present = true;
 
     mm_per_sec = KPH_TO_MM_PER_SEC * ble_sensorsim_measure(&m_speed_kph_sim_state,
                                                            &m_speed_kph_sim_cfg);
@@ -257,7 +257,7 @@ static void csc_sim_measurement(ble_cscs_meas_t * p_measurement)
         event_time + (event_time_inc * (mm_per_sec - wheel_revolution_mm) / mm_per_sec);
 
     // Calculate simulated cadence values.
-    p_measurement->is_crank_rev_data_present = true;
+    p_measurement->is_crank_rev_data_present = false;
 
     degrees_per_sec = RPM_TO_DEGREES_PER_SEC * ble_sensorsim_measure(&m_crank_rpm_sim_state,
                                                                      &m_crank_rpm_sim_cfg);
@@ -374,11 +374,10 @@ static void gap_params_init(void)
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 
     err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)deviceaddr_name, strlen(deviceaddr_name));
-    //err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)DEVICE_NAME, strlen(DEVICE_NAME));
 
     APP_ERROR_CHECK(err_code);
 
-    err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_CYCLING_SPEED_CADENCE_SENSOR);
+    err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_CYCLING_SPEED_SENSOR);
     APP_ERROR_CHECK(err_code);
 
     memset(&gap_conn_params, 0, sizeof(gap_conn_params));
@@ -476,13 +475,9 @@ static void services_init(void)
     cscs_init.evt_handler = NULL;
 
 // SET CSCS Features to Use
-   //cscs_init.feature     = BLE_CSCS_FEATURE_WHEEL_REV_BIT;
-   //cscs_init.feature     = BLE_CSCS_FEATURE_WHEEL_REV_BIT | BLE_CSCS_FEATURE_MULTIPLE_SENSORS_BIT;
+   cscs_init.feature       = BLE_CSCS_FEATURE_WHEEL_REV_BIT;
    //cscs_init.feature     = BLE_CSCS_FEATURE_WHEEL_REV_BIT | BLE_CSCS_FEATURE_CRANK_REV_BIT | BLE_CSCS_FEATURE_MULTIPLE_SENSORS_BIT;
    
-   //cscs_init.feature     = BLE_CSCS_FEATURE_CRANK_REV_BIT;
-   cscs_init.feature     = BLE_CSCS_FEATURE_CRANK_REV_BIT | BLE_CSCS_FEATURE_MULTIPLE_SENSORS_BIT;
-
     // Here the sec level for the Cycling Speed and Cadence Service can be changed/increased.
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cscs_init.csc_meas_attr_md.cccd_write_perm);    // for the measurement characteristic, only the CCCD write permission can be set by the application, others are mandated by service specification
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cscs_init.csc_feature_attr_md.read_perm);       // for the feature characteristic, only the read permission can be set by the application, others are mandated by service specification
