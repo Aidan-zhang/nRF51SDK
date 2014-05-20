@@ -491,7 +491,7 @@ static void services_init(void)
     cscs_init.list_supported_locations      = supported_locations;
     cscs_init.size_list_supported_locations = sizeof(supported_locations) / sizeof(ble_sensor_location_t);            
     
-    sensor_location           = BLE_SENSOR_LOCATION_FRONT_WHEEL;                    // initializes the sensor location to add the sensor location characteristic.
+    sensor_location           = BLE_SENSOR_LOCATION_LEFT_CRANK;                    // initializes the sensor location to add the sensor location characteristic.
     cscs_init.sensor_location = &sensor_location;
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cscs_init.csc_sensor_loc_attr_md.read_perm);    // for the sensor location characteristic, only the read permission can be set by the application, others are mendated by service specification
 
