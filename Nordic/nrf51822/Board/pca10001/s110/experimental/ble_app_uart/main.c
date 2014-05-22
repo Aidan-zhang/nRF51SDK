@@ -33,24 +33,32 @@
 #include "app_timer.h"
 #include "app_button.h"
 #include "ble_nus.h"
-#include "simple_uart.h"
+//#include "simple_uart.h"
 #include "boards.h"
-#include "ble_error_log.h"
 #include "ble_debug_assert_handler.h"
+
+#include "ble_sensorsim.h"
 
 #define WAKEUP_BUTTON_PIN               BUTTON_0                                    /**< Button used to wake up the application. */
 
 #define ADVERTISING_LED_PIN_NO          LED_0                                       /**< LED to indicate advertising state. */
 #define CONNECTED_LED_PIN_NO            LED_1                                       /**< LED to indicate connected state. */
 
-#define DEVICE_NAME                     "Nordic_UART"                               /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "Nordic_UART_2"                               /**< Name of device. Will be included in the advertising data. */
 
-#define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
+#define APP_ADV_INTERVAL                40                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
 
 #define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
-#define APP_TIMER_MAX_TIMERS            2                                           /**< Maximum number of simultaneously created timers. */
+#define APP_TIMER_MAX_TIMERS            3                                           /**< Maximum number of simultaneously created timers. */
 #define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */
+
+#define VALUE_LEVEL_MEAS_INTERVAL          APP_TIMER_TICKS(100, APP_TIMER_PRESCALER) /**< Value level measurement interval (ticks). */
+//#define VALUE_LEVEL_MEAS_INTERVAL          APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< Value level measurement interval (ticks). */
+#define MIN_VALUE_LEVEL                 2                                         /**< Minimum value level as returned by the simulated measurement function. */
+#define MAX_VALUE_LEVEL                 128                                        /**< Maximum value level as returned by the simulated measurement function. */
+#define VALUE_LEVEL_INCREMENT           1                                          /**< Value by which the value level is incremented/decremented for each call to the simulated measurement function. */
+
 
 #define MIN_CONN_INTERVAL               16                                          /**< Minimum acceptable connection interval (20 ms), Connection interval uses 1.25 ms units. */
 #define MAX_CONN_INTERVAL               60                                          /**< Maximum acceptable connection interval (75 ms), Connection interval uses 1.25 ms units. */
@@ -77,6 +85,12 @@
 static ble_gap_sec_params_t             m_sec_params;                               /**< Security requirements for this application. */
 static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;    /**< Handle of the current connection. */
 static ble_nus_t                        m_nus;                                      /**< Structure to identify the Nordic UART Service. */
+
+static ble_sensorsim_cfg_t                   m_value_sim_cfg;                         /**< value Level sensor simulator configuration. */
+static ble_sensorsim_state_t                 m_value_sim_state;                       /**< value Level sensor simulator state. */
+static app_timer_id_t                        m_value_timer_id;                        /**< Battery timer. */
+
+
 
 
 /**@brief     Error handler function, which is called when an error has occurred.
@@ -121,6 +135,37 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 }
 
 
+/**@brief Function for handling the simulated value measurement timer timeout.
+ *
+ * @details This function will be called each time the value level measurement timer expires.
+ *
+ * @param[in]   p_context   Pointer used for passing some arbitrary information (context) from the
+ *                          app_start_timer() call to the timeout handler.
+ */
+static void value_level_meas_timeout_handler(void * p_context)
+{
+    static uint8_t data_array[BLE_NUS_MAX_DATA_LEN];
+    static uint8_t index = 0;
+    uint32_t err_code;
+    
+    UNUSED_PARAMETER(p_context);
+
+    data_array[index] = (uint8_t)ble_sensorsim_measure(&m_value_sim_state, &m_value_sim_cfg);
+    index++;
+
+    if ((data_array[index - 1] == '\n') || (index >= (BLE_NUS_MAX_DATA_LEN - 1)))
+    {
+        err_code = ble_nus_send_string(&m_nus, data_array, index + 1);
+        if (err_code != NRF_ERROR_INVALID_STATE)
+        {
+            APP_ERROR_CHECK(err_code);
+        }
+        index = 0;
+    }
+    nrf_gpio_pin_toggle(ADVERTISING_LED_PIN_NO);
+}
+
+
 /**@brief   Function for the LEDs initialization.
  *
  * @details Initializes all LEDs used by this application.
@@ -138,8 +183,16 @@ static void leds_init(void)
  */
 static void timers_init(void)
 {
+    uint32_t err_code;
     // Initialize timer module
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_MAX_TIMERS, APP_TIMER_OP_QUEUE_SIZE, false);
+
+    // Create battery timer.
+    err_code = app_timer_create(&m_value_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                value_level_meas_timeout_handler);
+    APP_ERROR_CHECK(err_code);
+
 }
 
 
@@ -212,9 +265,9 @@ void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
     for (int i = 0; i < length; i++)
     {
-        simple_uart_put(p_data[i]);
+//        simple_uart_put(p_data[i]);
     }
-    simple_uart_put('\n');
+//    simple_uart_put('\n');
 }
 /**@snippet [Handling the data received over BLE] */
 
@@ -228,7 +281,7 @@ static void services_init(void)
     
     memset(&nus_init, 0, sizeof(nus_init));
 
-    nus_init.data_handler = nus_data_handler;
+//    nus_init.data_handler = nus_data_handler;
     
     err_code = ble_nus_init(&m_nus, &nus_init);
     APP_ERROR_CHECK(err_code);
@@ -302,6 +355,19 @@ static void conn_params_init(void)
     
     err_code = ble_conn_params_init(&cp_init);
     APP_ERROR_CHECK(err_code);
+}
+
+/**@brief Function for starting application timers.
+ */
+static void application_timers_start(void)
+{
+    uint32_t err_code;
+    uint32_t csc_meas_timer_ticks;
+
+    // Start application timers.
+    err_code = app_timer_start(m_value_timer_id, VALUE_LEVEL_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
+
 }
 
 
@@ -458,51 +524,18 @@ static void power_manage(void)
 }
 
 
-/**@brief  Function for initializing the UART module.
+/**@brief Function for initializing the sensor simulators.
  */
-static void uart_init(void)
+static void sensor_sim_init(void)
 {
-    /**@snippet [UART Initialization] */
-    simple_uart_config(RTS_PIN_NUMBER, TX_PIN_NUMBER, CTS_PIN_NUMBER, RX_PIN_NUMBER, HWFC);
-    
-    NRF_UART0->INTENSET = UART_INTENSET_RXDRDY_Enabled << UART_INTENSET_RXDRDY_Pos;
-    
-    NVIC_SetPriority(UART0_IRQn, APP_IRQ_PRIORITY_LOW);
-    NVIC_EnableIRQ(UART0_IRQn);
-    /**@snippet [UART Initialization] */
+    m_value_sim_cfg.min          = MIN_VALUE_LEVEL;
+    m_value_sim_cfg.max          = MAX_VALUE_LEVEL;
+    m_value_sim_cfg.incr         = VALUE_LEVEL_INCREMENT;
+    m_value_sim_cfg.start_at_max = false;
+
+    ble_sensorsim_init(&m_value_sim_state, &m_value_sim_cfg);
 }
 
-
-/**@brief   Function for handling UART interrupts.
- *
- * @details This function will receive a single character from the UART and append it to a string.
- *          The string will be be sent over BLE when the last character received was a 'new line'
- *          i.e '\n' (hex 0x0D) or if the string has reached a length of @ref NUS_MAX_DATA_LENGTH.
- */
-void UART0_IRQHandler(void)
-{
-    static uint8_t data_array[BLE_NUS_MAX_DATA_LEN];
-    static uint8_t index = 0;
-    uint32_t err_code;
-
-    /**@snippet [Handling the data received over UART] */
-
-    data_array[index] = simple_uart_get();
-    index++;
-
-    if ((data_array[index - 1] == '\n') || (index >= (BLE_NUS_MAX_DATA_LEN - 1)))
-    {
-        err_code = ble_nus_send_string(&m_nus, data_array, index + 1);
-        if (err_code != NRF_ERROR_INVALID_STATE)
-        {
-            APP_ERROR_CHECK(err_code);
-        }
-        
-        index = 0;
-    }
-
-    /**@snippet [Handling the data received over UART] */
-}
 
 
 /**@brief  Application main function.
@@ -513,7 +546,7 @@ int main(void)
     leds_init();
     timers_init();
     buttons_init();
-    uart_init();
+    sensor_sim_init();
     ble_stack_init();
     gap_params_init();
     services_init();
@@ -521,8 +554,9 @@ int main(void)
     conn_params_init();
     sec_params_init();
     
-    simple_uart_putstring(START_STRING);
-    
+   // simple_uart_putstring(START_STRING);
+ 
+    application_timers_start();
     advertising_start();
     
     // Enter main loop

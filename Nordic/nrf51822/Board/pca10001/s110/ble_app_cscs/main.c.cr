@@ -63,7 +63,7 @@
 //#define ASSERT_LED_PIN_NO                    LED_7                                      /**< Is on when application has asserted. */
 
 #define DEVICE_NAME                          "VC5SEA"                               /**< Name of device. Will be included in the advertising data. */
-#define MANUFACTURER_NAME                    "NordicSemiconductor"                      /**< Manufacturer. Will be passed to Device Information Service. */
+#define MANUFACTURER_NAME                    "VeloComputer"                      /**< Manufacturer. Will be passed to Device Information Service. */
 #define APP_ADV_INTERVAL                     40                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 25 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS           180                                        /**< The advertising timeout in units of seconds. */
 
@@ -223,6 +223,7 @@ static void battery_level_meas_timeout_handler(void * p_context)
 {
     UNUSED_PARAMETER(p_context);
     battery_level_update();
+    //nrf_gpio_pin_toggle(ADVERTISING_LED_PIN_NO);
 }
 
 
