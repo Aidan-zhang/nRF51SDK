@@ -16,6 +16,8 @@ C_SOURCE_FILES += ../../../../../../Source/ble/ble_conn_params.c
 C_SOURCE_FILES += ../../../../../../Source/ble/ble_services/ble_srv_common.c
 C_SOURCE_FILES += ../../../../../../Source/sd_common/softdevice_handler.c
 C_SOURCE_FILES += ../../../../../../Source/simple_uart/simple_uart.c
+C_SOURCE_FILES += ../../../../../../Source/ble/ble_debug_assert_handler.c
+C_SOURCE_FILES += ../../../../../../Source/ble/ble_sensorsim.c
 
 INCLUDEPATHS += -I"../../../../../../Include/app_common"
 INCLUDEPATHS += -I"../../../../../../Include/ble"
