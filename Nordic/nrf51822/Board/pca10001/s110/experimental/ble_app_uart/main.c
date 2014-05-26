@@ -44,7 +44,7 @@
 #define ADVERTISING_LED_PIN_NO          LED_0                                       /**< LED to indicate advertising state. */
 #define CONNECTED_LED_PIN_NO            LED_1                                       /**< LED to indicate connected state. */
 
-#define DEVICE_NAME                     "Nordic_UART_2"                               /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "Nordic_UART_4"                               /**< Name of device. Will be included in the advertising data. */
 
 #define APP_ADV_INTERVAL                40                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
@@ -53,7 +53,9 @@
 #define APP_TIMER_MAX_TIMERS            3                                           /**< Maximum number of simultaneously created timers. */
 #define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */
 
-#define VALUE_LEVEL_MEAS_INTERVAL          APP_TIMER_TICKS(100, APP_TIMER_PRESCALER) /**< Value level measurement interval (ticks). */
+
+// ~ 10Hz messages result
+#define VALUE_LEVEL_MEAS_INTERVAL          APP_TIMER_TICKS(1, APP_TIMER_PRESCALER) /**< Value level measurement interval (ticks). */
 //#define VALUE_LEVEL_MEAS_INTERVAL          APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< Value level measurement interval (ticks). */
 #define MIN_VALUE_LEVEL                 2                                         /**< Minimum value level as returned by the simulated measurement function. */
 #define MAX_VALUE_LEVEL                 128                                        /**< Maximum value level as returned by the simulated measurement function. */
