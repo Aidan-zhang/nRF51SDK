@@ -7,11 +7,15 @@ TEMPLATE_PATH += $(SDK_SOURCE_PATH)/templates/gcc/
 OUTPUT_BINARY_DIRECTORY := _build
 GNU_PREFIX := arm-none-eabi
 
-#ifeq ($(OS),Windows_NT)
-include $(TEMPLATE_PATH)Makefile.windows
-#else
+#in .bashrc
+#export OS=Linux
+#export OS=$(uname)
+$(info $$OS is $(OS))
+ifeq ($(OS),Linux)
 include $(TEMPLATE_PATH)Makefile.posix
-#endif
+else
+include $(TEMPLATE_L_PATH)Makefile.windows
+endif
 
 ifeq ($(LINKER_SCRIPT),)
 	ifeq ($(USE_SOFTDEVICE), S110)
@@ -81,7 +85,7 @@ C_SOURCE_FILENAMES = $(notdir $(C_SOURCE_FILES) )
 ASSEMBLER_SOURCE_FILENAMES = $(notdir $(ASSEMBLER_SOURCE_FILES) )
 
 # Make a list of source paths
-C_SOURCE_PATHS += ../ $(SDK_SOURCE_PATH) $(TEMPLATE_PATH) $(wildcard $(SDK_SOURCE_PATH)*/)  $(wildcard $(SDK_SOURCE_PATH)ext_sensors/*/) $(wildcard $(SDK_SOURCE_PATH)ble/*/)
+C_SOURCE_PATHS += ../ $(SDK_SOURCE_PATH) $(TEMPLATE_PATH) $(wildcard $(SDK_SOURCE_PATH)*/)  $(wildcard $(SDK_SOURCE_PATH)ext_sensors/*/) $(wildcard $(SDK_SOURCE_PATH)ble/*/) $(wildcard $(C_LOCAL_PATH)/src/sensors/*/)
 ASSEMBLER_SOURCE_PATHS = ../ $(SDK_SOURCE_PATH) $(TEMPLATE_PATH) $(wildcard $(SDK_SOURCE_PATH)*/)
 
 C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(C_SOURCE_FILENAMES:.c=.o) )
