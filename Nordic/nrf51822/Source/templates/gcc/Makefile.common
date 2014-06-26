@@ -63,7 +63,8 @@ LDFLAGS += -mcpu=$(CPU) -mthumb -mabi=aapcs -L $(TEMPLATE_PATH) -T$(LINKER_SCRIP
 # Compiler flags
 CFLAGS += -mcpu=$(CPU) -mthumb -mabi=aapcs -D$(DEVICE) -D$(BOARD) -D$(TARGET_CHIP) --std=gnu99
 #CFLAGS += -Wall -Werror
-CFLAGS += -Wall 
+CFLAGS += -Wall -Werror=implicit-function-declaration
+
 CFLAGS += -mfloat-abi=soft
 
 # Assembler flags
