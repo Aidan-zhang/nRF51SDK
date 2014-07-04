@@ -5,16 +5,11 @@ SDK_INCLUDE_PATH = $(SDK_PATH)/Include/
 SDK_SOURCE_PATH = $(SDK_PATH)/Source/
 TEMPLATE_PATH += $(SDK_SOURCE_PATH)/templates/gcc/
 OUTPUT_BINARY_DIRECTORY := _build
-GNU_PREFIX := arm-none-eabi
 
-#in .bashrc
-#export OS=Linux
-#export OS=$(uname)
-$(info $$OS is $(OS))
-ifeq ($(OS),Linux)
-include $(TEMPLATE_PATH)Makefile.posix
+ifeq ($(OS),Windows_NT)
+include $(TEMPLATE_PATH)Makefile.windows
 else
-include $(TEMPLATE_L_PATH)Makefile.windows
+include $(TEMPLATE_PATH)Makefile.posix
 endif
 
 ifeq ($(LINKER_SCRIPT),)
@@ -55,16 +50,14 @@ C_SOURCE_FILES += system_$(DEVICESERIES).c
 ASSEMBLER_SOURCE_FILES += gcc_startup_$(DEVICESERIES).s
 
 # Linker flags
-LDFLAGS += -L"$(GNU_INSTALL_ROOT)/arm-none-eabi/lib/armv6-m"
-LDFLAGS += -L"$(GNU_INSTALL_ROOT)/lib/gcc/arm-none-eabi/$(GNU_VERSION)/armv6-m"
+#LDFLAGS += -L"$(GNU_INSTALL_ROOT)/arm-none-eabi/lib/armv6-m"
+#LDFLAGS += -L"$(GNU_INSTALL_ROOT)/lib/gcc/arm-none-eabi/$(GNU_VERSION)/armv6-m"
 LDFLAGS += -Xlinker -Map=$(LISTING_DIRECTORY)/$(OUTPUT_FILENAME).map
 LDFLAGS += -mcpu=$(CPU) -mthumb -mabi=aapcs -L $(TEMPLATE_PATH) -T$(LINKER_SCRIPT) 
 
 # Compiler flags
 CFLAGS += -mcpu=$(CPU) -mthumb -mabi=aapcs -D$(DEVICE) -D$(BOARD) -D$(TARGET_CHIP) --std=gnu99
-#CFLAGS += -Wall -Werror
-CFLAGS += -Wall -Werror=implicit-function-declaration
-
+CFLAGS += -Wall -Werror
 CFLAGS += -mfloat-abi=soft
 
 # Assembler flags
@@ -86,7 +79,7 @@ C_SOURCE_FILENAMES = $(notdir $(C_SOURCE_FILES) )
 ASSEMBLER_SOURCE_FILENAMES = $(notdir $(ASSEMBLER_SOURCE_FILES) )
 
 # Make a list of source paths
-C_SOURCE_PATHS += ../ $(SDK_SOURCE_PATH) $(TEMPLATE_PATH) $(wildcard $(SDK_SOURCE_PATH)*/)  $(wildcard $(SDK_SOURCE_PATH)ext_sensors/*/) $(wildcard $(SDK_SOURCE_PATH)ble/*/) $(wildcard $(C_LOCAL_PATH)/src/sensors/*/)
+C_SOURCE_PATHS += ../ $(SDK_SOURCE_PATH) $(TEMPLATE_PATH) $(wildcard $(SDK_SOURCE_PATH)*/)  $(wildcard $(SDK_SOURCE_PATH)ext_sensors/*/) $(wildcard $(SDK_SOURCE_PATH)ble/*/)
 ASSEMBLER_SOURCE_PATHS = ../ $(SDK_SOURCE_PATH) $(TEMPLATE_PATH) $(wildcard $(SDK_SOURCE_PATH)*/)
 
 C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(C_SOURCE_FILENAMES:.c=.o) )
@@ -113,6 +106,7 @@ release:  $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin $(OUTPUT_BINARY_DIRE
 echostuff:
 	@echo C_OBJECTS: [$(C_OBJECTS)]
 	@echo C_SOURCE_FILES: [$(C_SOURCE_FILES)]
+	@echo C_SOURCE_PATHS: [$(C_SOURCE_PATHS)]
 
 ## Create build directories
 $(BUILD_DIRECTORIES):
@@ -143,7 +137,7 @@ $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex: $(OUTPUT_BINARY_DIRECTORY)/$(
 
 ## Default build target
 .PHONY: all
-all: clean debug
+all: clean release
 
 clean:
 	$(RM) $(OUTPUT_BINARY_DIRECTORY)

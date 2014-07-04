@@ -2,7 +2,7 @@ TARGET_CHIP := NRF51822_QFAA_CA
 BOARD := BOARD_NRF6310
 
 C_SOURCE_FILES += main.c
-#C_SOURCE_FILES += simple_uart.c
+C_SOURCE_FILES += simple_uart.c
 
 OUTPUT_FILENAME := rtc_example_gcc
 SDK_PATH = ../../../../

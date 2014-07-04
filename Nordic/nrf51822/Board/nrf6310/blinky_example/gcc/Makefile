@@ -6,7 +6,6 @@ C_SOURCE_FILES += nrf_delay.c
 
 
 SDK_PATH = ../../../../
-#TEMPLATE_PATH = $(SDK_PATH)Source/templates/gcc/
 OUTPUT_FILENAME := blinky_gcc
 
 DEVICE_VARIANT := xxaa
@@ -16,4 +15,3 @@ DEVICE_VARIANT := xxaa
 #USE_SOFTDEVICE := S210
 
 include $(SDK_PATH)Source/templates/gcc/Makefile.common
-#include $(TEMPLATE_PATH)Makefile.common

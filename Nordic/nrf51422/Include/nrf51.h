@@ -6,9 +6,9 @@
  *           nRF51 from Nordic Semiconductor.
  *
  * @version  V522
- * @date     4. March 2014
+ * @date     30. June 2014
  *
- * @note     Generated with SVDConv V2.77p 
+ * @note     Generated with SVDConv V2.81d 
  *           from CMSIS SVD File 'nRF51.xml' Version 522,
  *
  * @par      Copyright (c) 2013, Nordic Semiconductor ASA
@@ -109,14 +109,14 @@ typedef enum {
 /* ================      Processor and Core Peripheral Section     ================ */
 /* ================================================================================ */
 
-/* ----------------Configuration of the cm0 Processor and Core Peripherals---------------- */
+/* ----------------Configuration of the Cortex-M0 Processor and Core Peripherals---------------- */
 #define __CM0_REV                 0x0301            /*!< Cortex-M0 Core Revision                                               */
 #define __MPU_PRESENT                  0            /*!< MPU present or not                                                    */
 #define __NVIC_PRIO_BITS               2            /*!< Number of Bits used for Priority Levels                               */
 #define __Vendor_SysTickConfig         0            /*!< Set to 1 if different SysTick Config is used                          */
 /** @} */ /* End of group Configuration_of_CMSIS */
 
-#include <core_cm0.h>                               /*!< Cortex-M0 processor and core peripherals                              */
+#include "core_cm0.h"                               /*!< Cortex-M0 processor and core peripherals                              */
 #include "system_nrf51.h"                           /*!< nRF51 System                                                          */
 
 
@@ -1064,7 +1064,7 @@ typedef struct {                                    /*!< FICR Structure         
                                                          kept for backward compatinility purposes. Use SIZERAMBLOCKS
                                                           instead.                                                             */
     __I  uint32_t  SIZERAMBLOCKS;                   /*!< Size of RAM blocks in bytes.                                          */
-  } ;
+  };
   __I  uint32_t  RESERVED3[5];
   __I  uint32_t  CONFIGID;                          /*!< Configuration identifier.                                             */
   __I  uint32_t  DEVICEID[2];                       /*!< Device identifier.                                                    */
