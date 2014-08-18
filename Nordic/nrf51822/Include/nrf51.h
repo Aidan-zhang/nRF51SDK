@@ -271,8 +271,6 @@ typedef struct {                                    /*!< MPU Structure          
   __IO uint32_t  PROTENSET1;                        /*!< Erase and write protection bit enable set register.                   */
   __IO uint32_t  DISABLEINDEBUG;                    /*!< Disable erase and write protection mechanism in debug mode.           */
   __IO uint32_t  PROTBLOCKSIZE;                     /*!< Erase and write protection block size.                                */
-  __I  uint32_t  RESERVED2[255];
-  __IO uint32_t  ENRBDREG;                          /*!< Enable or disable RBD.                                                */
 } NRF_MPU_Type;
 
 
@@ -1052,8 +1050,7 @@ typedef struct {                                    /*!< FICR Structure         
   __I  uint32_t  RESERVED0[4];
   __I  uint32_t  CODEPAGESIZE;                      /*!< Code memory page size in bytes.                                       */
   __I  uint32_t  CODESIZE;                          /*!< Code memory size in pages.                                            */
-  __I  uint32_t  RBD;                               /*!< RBD.                                                                  */
-  __I  uint32_t  RESERVED1[3];
+  __I  uint32_t  RESERVED1[4];
   __I  uint32_t  CLENR0;                            /*!< Length of code region 0 in bytes.                                     */
   __I  uint32_t  PPFC;                              /*!< Pre-programmed factory code present.                                  */
   __I  uint32_t  RESERVED2;

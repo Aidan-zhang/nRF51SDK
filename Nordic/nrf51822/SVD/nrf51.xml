@@ -3296,30 +3296,6 @@
           </fields>
         </register>
         
-        <register>
-          <name>ENRBDREG</name>
-          <description>Enable or disable RBD.</description>
-          <addressOffset>0xA0C</addressOffset>
-          <fields>
-            <field>
-              <name>ENRBDREG</name>
-              <description>Enable or disable RBD.</description>
-              <lsb>0</lsb> <msb>0</msb>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>Disabled</name>
-                  <description>RBD disabled.</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Enabled</name>
-                  <description>RBD enabled.</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-          </fields>
-        </register>
         
       </registers>
     </peripheral>
@@ -18285,31 +18261,6 @@
           <addressOffset>0x014</addressOffset>
         </register>
         
-        <register>
-          <name>RBD</name>
-          <description>RBD.</description>
-          <addressOffset>0x018</addressOffset>
-          <fields>
-            <field>
-              <name>RBD</name>
-              <description>RBD.</description>
-              <lsb>0</lsb> <msb>31</msb>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>NoRoyalty</name>
-                  <description>No royalty.</description>
-                  <value>0xFFFFFFFE</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Royalty</name>
-                  <description>Royalty.</description>
-                  <value>0xFFFFFFFF</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-          </fields>
-        </register>
-
         <register>
           <name>CLENR0</name>
           <description>Length of code region 0 in bytes.</description>

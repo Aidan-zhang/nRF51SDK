@@ -1118,15 +1118,6 @@
 /* Peripheral: FICR */
 /* Description: Factory Information Configuration. */
 
-/* Register: FICR_RBD */
-/* Description: RBD. */
-
-/* Bits 31..0 : RBD. */
-#define FICR_RBD_RBD_Pos (0UL) /*!< Position of RBD field. */
-#define FICR_RBD_RBD_Msk (0xFFFFFFFFUL << FICR_RBD_RBD_Pos) /*!< Bit mask of RBD field. */
-#define FICR_RBD_RBD_NoRoyalty (0xFFFFFFFEUL) /*!< No royalty. */
-#define FICR_RBD_RBD_Royalty (0xFFFFFFFFUL) /*!< Royalty. */
-
 /* Register: FICR_PPFC */
 /* Description: Pre-programmed factory code present. */
 
@@ -3603,15 +3594,6 @@
 #define MPU_PROTBLOCKSIZE_PROTBLOCKSIZE_Pos (0UL) /*!< Position of PROTBLOCKSIZE field. */
 #define MPU_PROTBLOCKSIZE_PROTBLOCKSIZE_Msk (0x3UL << MPU_PROTBLOCKSIZE_PROTBLOCKSIZE_Pos) /*!< Bit mask of PROTBLOCKSIZE field. */
 #define MPU_PROTBLOCKSIZE_PROTBLOCKSIZE_4k (0UL) /*!< Erase and write protection block size is 4k. */
-
-/* Register: MPU_ENRBDREG */
-/* Description: Enable or disable RBD. */
-
-/* Bit 0 : Enable or disable RBD. */
-#define MPU_ENRBDREG_ENRBDREG_Pos (0UL) /*!< Position of ENRBDREG field. */
-#define MPU_ENRBDREG_ENRBDREG_Msk (0x1UL << MPU_ENRBDREG_ENRBDREG_Pos) /*!< Bit mask of ENRBDREG field. */
-#define MPU_ENRBDREG_ENRBDREG_Disabled (0UL) /*!< RBD disabled. */
-#define MPU_ENRBDREG_ENRBDREG_Enabled (1UL) /*!< RBD enabled. */
 
 
 /* Peripheral: NVMC */
