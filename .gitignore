@@ -28,3 +28,14 @@ JLinkLog.txt
 *.lnp
 *.map
 _build
+
+#ignore keil gui files
+*.uvopt
+*.uvgui.*
+
+#ignore doc temp files
+.~lock.*
+.*~
+
+#ignore archive files
+*.tar
