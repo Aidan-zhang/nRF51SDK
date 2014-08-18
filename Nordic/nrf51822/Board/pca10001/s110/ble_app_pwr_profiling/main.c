@@ -36,12 +36,13 @@
 #include "ble_hci.h"  
 #include "ble_srv_common.h"
 #include "ble_advdata.h"
-#include "boards.h"
 #include "ble_sensorsim.h"
 #include "softdevice_handler.h"
 #include "app_timer.h"
 #include "ble_error_log.h"
 #include "ble_debug_assert_handler.h"
+
+#include "nrf6100_10001.h"
 
 
 
@@ -130,6 +131,8 @@ static const ble_uuid128_t m_base_uuid128 =
 };
 
 static ble_gap_adv_params_t     m_adv_params;                                       /**< Parameters to be passed to the stack when starting advertising. */
+static ble_gap_addr_t           m_ble_addr;                                         /**< Variable for getting and setting of BLE device address. */
+
 static uint8_t                  m_char_value[APP_CFG_CHAR_LEN];                     /**< Value of the characteristic that will be sent as a notification to the central. */
 static uint8_t                  m_addl_adv_manuf_data[ADV_ADDL_MANUF_DATA_LEN];     /**< Value of the additional manufacturer specific data that will be placed in air (initialized to all zeros). */
 static ble_gatts_char_handles_t m_char_handles;                                     /**< Handles of local characteristic (as provided by the BLE stack).*/
@@ -643,6 +646,10 @@ static void ble_stack_init(void)
     memset(&ble_enable_params, 0, sizeof(ble_enable_params));
     ble_enable_params.gatts_enable_params.service_changed = IS_SRVC_CHANGED_CHARACT_PRESENT;
     err_code = sd_ble_enable(&ble_enable_params);
+    APP_ERROR_CHECK(err_code);
+    err_code = sd_ble_gap_address_get(&m_ble_addr);
+    APP_ERROR_CHECK(err_code);
+    err_code = sd_ble_gap_address_set(BLE_GAP_ADDR_CYCLE_MODE_NONE, &m_ble_addr);
     APP_ERROR_CHECK(err_code);
 
     // Register with the SoftDevice handler module for BLE events.
