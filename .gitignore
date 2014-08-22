@@ -28,3 +28,5 @@ JLinkLog.txt
 *.lnp
 *.map
 _build
+*.uvgui.*
+*.uvopt
