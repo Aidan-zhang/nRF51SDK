@@ -30,6 +30,7 @@
 #include "nordic_common.h"
 #include "nrf.h"
 #include "app_error.h"
+#include "nrf_delay.h"
 #include "nrf51_bitfields.h"
 #include "nrf_gpio.h"
 #include "ble.h"
@@ -60,7 +61,7 @@
 #define NOTIF_BUTTON_PIN_NO           BUTTON_0                                      /**< Button used for initializing the application in connectable mode. */
 #define NON_CONN_ADV_BUTTON_PIN_NO    BUTTON_1                                      /**< Button used for initializing the application in non-connectable mode. */
 
-#define ASSERT_LED_PIN_NO             LED_7                                         /**< Is on when application has asserted. */
+#define ASSERT_LED_PIN_NO             LED_1                                         /**< Is on when application has asserted. */
 
 #define DEVICE_NAME                   "Nordic_Power_Mgmt"                           /**< Name of device. Will be included in the advertising data. */
 
@@ -151,7 +152,15 @@ void pstorage_sys_event_handler (uint32_t p_evt);
  */
 void app_error_handler(uint32_t error_code, uint32_t line_num, const uint8_t * p_file_name)
 {
-    nrf_gpio_pin_set(ASSERT_LED_PIN_NO);
+    // comment after debugging
+    nrf_gpio_pin_clear(LED_0);
+    nrf_gpio_pin_set(LED_1);
+    while (true)
+    {
+        nrf_delay_ms(100);
+        nrf_gpio_pin_toggle(LED_0);
+        nrf_gpio_pin_toggle(LED_1);
+    }
 
     // This call can be used for debug purposes during application development.
     // @note CAUTION: Activating this code will write the stack to flash on an error.
@@ -163,7 +172,7 @@ void app_error_handler(uint32_t error_code, uint32_t line_num, const uint8_t * p
     // ble_debug_assert_handler(error_code, line_num, p_file_name);
 
     // On assert, the system can only recover on reset
-    NVIC_SystemReset();
+    //NVIC_SystemReset();  //uncomment after debugging
 }
 
 
@@ -230,16 +239,28 @@ static void char_notify(void)
 static void gap_params_init(void)
 {
     uint32_t                err_code;
+    char deviceaddr_name[22] = "PWD-";
+    int j = 4; //length of device name
+    int mac_len = 6;
+    const char hexmap[] = "0123456789ABCDEF";
+    int32_t tmp;
+    int i;
     ble_gap_conn_params_t   gap_conn_params;
     ble_gap_conn_sec_mode_t sec_mode;
 
+    tmp = NRF_FICR ->DEVICEADDR[0];
+    for (i = 0; i<mac_len; i++)
+    {
+        deviceaddr_name[j++] = hexmap[(tmp >>((mac_len-1)-i)*4) & 0xF];
+    }
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
-    
     err_code = sd_ble_gap_device_name_set(&sec_mode,
-                                          (const uint8_t *)DEVICE_NAME, 
-                                          strlen(DEVICE_NAME));
+            (const uint8_t *) deviceaddr_name, j);
     APP_ERROR_CHECK(err_code);
-    
+
+    err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_UNKNOWN);
+    APP_ERROR_CHECK(err_code);
+        
     memset(&gap_conn_params, 0, sizeof(gap_conn_params));
 
     // Set GAP Peripheral Preferred Connection Parameters (converting connection interval from
@@ -490,6 +511,7 @@ static void advertising_start(void)
 {
     uint32_t err_code;
     
+    nrf_gpio_pin_set(LED_0);
     err_code = sd_ble_gap_adv_start(&m_adv_params);
     APP_ERROR_CHECK(err_code);
 }
@@ -560,6 +582,8 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
+            nrf_gpio_pin_clear(LED_0);
+            nrf_gpio_pin_set(LED_1);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             break;
             
@@ -569,6 +593,8 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             application_timers_stop();
             
             // Go to system-off mode            
+            nrf_gpio_pin_clear(LED_0);
+            nrf_gpio_pin_clear(LED_1);
             err_code = sd_power_system_off();
             APP_ERROR_CHECK(err_code);
             break;
@@ -582,6 +608,8 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             if (p_ble_evt->evt.gap_evt.params.timeout.src == BLE_GAP_TIMEOUT_SRC_ADVERTISEMENT)
             { 
                 // Go to system-off mode (this function will not return; wakeup will cause a reset).
+                nrf_gpio_pin_clear(LED_0);
+                nrf_gpio_pin_clear(LED_1);
                 err_code = sd_power_system_off(); 
                 APP_ERROR_CHECK(err_code);
             }
@@ -624,7 +652,7 @@ static void sys_evt_dispatch(uint32_t sys_evt)
 }
 
 
-/**@brief Function for initializing the BLE stack.
+/**@brief Function for initializing the BLE stack
  *
  * @details Initializes the SoftDevice and the BLE event interrupt.
  */
@@ -659,6 +687,17 @@ static void buttons_init(void)
                              NRF_GPIO_PIN_SENSE_LOW);
 }
 
+/**@brief Function for initialization of LEDs.
+ *
+ * @details Initializes all LEDs used by the application.
+ */
+void leds_init(void)
+{
+    nrf_gpio_cfg_output(LED_0);
+    nrf_gpio_cfg_output(LED_1);
+}
+
+
 
 /**@brief Function for the Power manager.
  */
@@ -677,16 +716,19 @@ int main(void)
     bool is_non_connectable_mode = false;
 
     buttons_init();
+    leds_init();
 
     // Check button states.
     // Notification Start button.
     if (nrf_gpio_pin_read(NOTIF_BUTTON_PIN_NO) == 0)    
     {
+       // nrf_gpio_pin_set(LED_0);
         is_notification_mode = true;
     }
     // Non-connectable advertisement start button.
     else if (nrf_gpio_pin_read(NON_CONN_ADV_BUTTON_PIN_NO) == 0)
     {
+        //nrf_gpio_pin_set(LED_1);
         is_non_connectable_mode = true;
     }
     // Un-configured button.
@@ -701,6 +743,8 @@ int main(void)
     {
         uint32_t err_code;
 
+        nrf_gpio_pin_clear(LED_0);
+        nrf_gpio_pin_clear(LED_1);
         // The startup was not because of button presses. This is the first start. 
         // Go into System-Off mode. Button presses will wake the chip up.
         err_code = sd_power_system_off();  
