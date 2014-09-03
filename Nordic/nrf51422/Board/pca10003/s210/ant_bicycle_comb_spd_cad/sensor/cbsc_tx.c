@@ -145,7 +145,7 @@ uint32_t cbsc_tx_initialize(void)
     m_tx_buffer[SPEED_EVENT_TIME_MSB_INDEX]   = HIGH_BYTE(m_speed_event_time);                        
     m_tx_buffer[CUMULATIVE_SPEED_LSB_INDEX]   = LOW_BYTE(m_speed_revolution_count);                        
     m_tx_buffer[CUMULATIVE_SPEED_MSB_INDEX]   = HIGH_BYTE(m_speed_revolution_count);                                    
-
+		printf("Broadcast start \n");
     return broadcast_message_transmit();
 }
 
@@ -160,6 +160,7 @@ uint32_t cbsc_tx_channel_event_handle(uint32_t event)
             // Broadcast tx message has been processed by the ANT stack. Send next message for it to 
             // transmit. 
             err_code = broadcast_message_transmit();
+						printf("Broadcast done \n");
             break;
         
         default:
