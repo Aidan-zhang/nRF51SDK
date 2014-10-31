@@ -362,17 +362,21 @@ static void timers_init(void)
 static void gap_params_init(void)
 {
     uint32_t                err_code;
-    char                    deviceaddr_name[16];
+    char deviceaddr_name[22] = "NORDIC_CSC-";
+    int j = 11; //length of device name
+    int mac_len = 6;
+    const char hexmap[] = "0123456789ABCDEF";
+    int32_t tmp;
+    int i;
     ble_gap_conn_params_t   gap_conn_params;
     ble_gap_conn_sec_mode_t sec_mode;
 
-    snprintf(&deviceaddr_name,14,"%s-%.4X%.2X\0",
-        DEVICE_NAME,
-        NRF_FICR->DEVICEADDR[0],
-        NRF_FICR->DEVICEADDR[1]);
-
+    tmp = NRF_FICR ->DEVICEADDR[0];
+    for (i = 0; i<mac_len; i++)
+    {
+        deviceaddr_name[j++] = hexmap[(tmp >>((mac_len-1)-i)*4) & 0xF];
+    }
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
-
     err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)deviceaddr_name, strlen(deviceaddr_name));
     APP_ERROR_CHECK(err_code);
 
