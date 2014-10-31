@@ -14,7 +14,7 @@
         <TargetCommonOption>
           <Device>nRF51422_xxAA</Device>
           <Vendor>Nordic Semiconductor</Vendor>
-          <PackID>NordicSemiconductor.nRF_DeviceFamilyPack.1.0.3</PackID>
+          <PackID>NordicSemiconductor.nRF_DeviceFamilyPack.1.1.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000800-0x20003FFF) IROM(0xA000-0x3FFFF) CLOCK(16000000) CPUTYPE("Cortex-M0") ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
