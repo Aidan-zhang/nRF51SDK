@@ -30,3 +30,4 @@ JLinkLog.txt
 _build
 *.uvgui.*
 *.uvopt
+*.ini
