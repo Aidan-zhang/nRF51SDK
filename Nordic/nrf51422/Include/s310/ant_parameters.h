@@ -45,17 +45,18 @@
 /** @name Radio Proximity Search Threshold
 @{ */
 //////////////////////////////////////////////
-#define PROXIMITY_THRESHOLD_OFF                    ((uint8_t)0x00) ///< Disable proximity search detection. Default to largest search detection radius.
-#define PROXIMITY_THRESHOLD_1                      ((uint8_t)0x01) ///< Smallest proximity search detection radius.
-#define PROXIMITY_THRESHOLD_2                      ((uint8_t)0x02) ///< Proximity search detection radius > threshold 1.
-#define PROXIMITY_THRESHOLD_3                      ((uint8_t)0x03) ///< Proximity search detection radius > threshold 2.
-#define PROXIMITY_THRESHOLD_4                      ((uint8_t)0x04) ///< Proximity search detection radius > threshold 3.
-#define PROXIMITY_THRESHOLD_5                      ((uint8_t)0x05) ///< Proximity search detection radius > threshold 4.
-#define PROXIMITY_THRESHOLD_6                      ((uint8_t)0x06) ///< Proximity search detection radius > threshold 5.
-#define PROXIMITY_THRESHOLD_7                      ((uint8_t)0x07) ///< Proximity search detection radius > threshold 6.
-#define PROXIMITY_THRESHOLD_8                      ((uint8_t)0x08) ///< Proximity search detection radius > threshold 7.
-#define PROXIMITY_THRESHOLD_9                      ((uint8_t)0x09) ///< Proximity search detection radius > threshold 8.
-#define PROXIMITY_THRESHOLD_10                     ((uint8_t)0x0A) ///< Proximity search detection radius > threshold 9.
+#define PROXIMITY_THRESHOLD_CUSTOM                 ((uint8_t)0x80) ///< Custom proximity search selection.
+#define PROXIMITY_THRESHOLD_OFF                    ((uint8_t)0x00) ///< Disable proximity search detection.
+#define PROXIMITY_THRESHOLD_1                      ((uint8_t)0x01) ///< Proximity search detection radius > preset threshold (~ -44dBm on nRF51)
+#define PROXIMITY_THRESHOLD_2                      ((uint8_t)0x02) ///< Proximity search detection radius > preset threshold (~ -48dBm on nRF51).
+#define PROXIMITY_THRESHOLD_3                      ((uint8_t)0x03) ///< Proximity search detection radius > preset threshold (~ -52dBm on nRF51).
+#define PROXIMITY_THRESHOLD_4                      ((uint8_t)0x04) ///< Proximity search detection radius > preset threshold (~ -56dBm on nRF51).
+#define PROXIMITY_THRESHOLD_5                      ((uint8_t)0x05) ///< Proximity search detection radius > preset threshold (~ -60dBm on nRF51).
+#define PROXIMITY_THRESHOLD_6                      ((uint8_t)0x06) ///< Proximity search detection radius > preset threshold (~ -64dBm on nRF51).
+#define PROXIMITY_THRESHOLD_7                      ((uint8_t)0x07) ///< Proximity search detection radius > preset threshold (~ -68dBm on nRF51).
+#define PROXIMITY_THRESHOLD_8                      ((uint8_t)0x08) ///< Proximity search detection radius > preset threshold (~ -72dBm on nRF51).
+#define PROXIMITY_THRESHOLD_9                      ((uint8_t)0x09) ///< Proximity search detection radius > preset threshold (~ -76dBm on nRF51).
+#define PROXIMITY_THRESHOLD_10                     ((uint8_t)0x0A) ///< Proximity search detection radius > preset threshold (~ -80dBm on nRF51).
 /** @} */
 
 //////////////////////////////////////////////
@@ -227,6 +228,9 @@
 /** @name RSSI Definitions in Extended Data Message
 @{ */
 //////////////////////////////////////////////
+#define RSSI_TYPE_AGC_EXT_MESG_FIELD_SIZE          ((uint8_t)4) ///< Extended bitfield message size for AGC type RSSI measurement
+#define RSSI_TYPE_DBM_EXT_MESG_FIELD_SIZE          ((uint8_t)3) ///< Extended bitfield message size for DBM type RSSI measurement
+
 #define RSSI_TYPE_OFFSET                           ((uint8_t)0) ///< RSSI type offset in RSSI field in extended data message
 #define RSSI_AGC_TYPE                              ((uint8_t)0x10) ///< RSSI type indicating support for AGC measurement
 #define RSSI_DBM_TYPE                              ((uint8_t)0x20) ///< RSSI type indicating support for DBM measurement
@@ -443,7 +447,7 @@
 // are present before accessing them!
 //////////////////////////////////////////////
 #define ANT_EXT_MESG_DEVICE_ID_FIELD_SIZE    ((uint8_t)4)
-#define ANT_EXT_MESG_RSSI_FIELD_SIZE         ((uint8_t)4)
+#define ANT_EXT_MESG_RSSI_FIELD_SIZE         ((uint8_t)4) // maximum RSSI field size regardless of RSSI type
 #define ANT_EXT_MESG_TIME_STAMP_FIELD_SIZE   ((uint8_t)2)
 #define ANT_EXT_STRING_SIZE                  ((uint8_t)16) // additional buffer to accommdate for 24 byte advance burst mode & encrypted usr data
 
@@ -523,10 +527,6 @@
 #define MESG_ACTIVE_SEARCH_SHARING_ID        ((uint8_t)0x81) ///< ANT stack - active seach sharing config message ID
 #define MESG_COEX_ADV_PRIORITY_CONFIG_ID     ((uint8_t)0x82) ///< ANT stack - advanced/platform specific coexistence priority config message ID
 #define MESG_RFACTIVE_NOTIFICATION_ID        ((uint8_t)0x84) ///< ANT stack - RF active notification config message ID
-#define MESG_FLASH_PROTECTION_CHECK_ID       ((uint8_t)0xA7) ///< ANT application - check flash protection message ID
-#define MESG_BIST_ID                         ((uint8_t)0xAA) ///< ANT application - built in self test message ID
-#define MESG_SLEEP_ID                        ((uint8_t)0xC5) ///< ANT application - sleep config message ID
-#define MESG_CUSTOM_BLE_COMMAND              ((uint8_t)0xD0) ///< ANT application - BLE control via ANT message interface
 /** @} */
 
 //////////////////////////////////////////////
@@ -537,10 +537,22 @@
 #define MESG_EXT_ID_0                        ((uint8_t)0xE0) ///< ANT message ID extension 0xE1
 #define MESG_EXT_ID_1                        ((uint8_t)0xE1) ///< ANT message ID 0xE1 extension
 #define MESG_EXT_ID_2                        ((uint8_t)0xE2) ///< ANT message ID 0xE2 extension
+#define MESG_EXT_ID_3                        ((uint8_t)0xE3) ///< ANT message ID 0xE3 extension
+#define MESG_EXT_ID_4                        ((uint8_t)0xE4) ///< ANT message ID 0xE4 extension
+
 // 0xE0 extended IDs
 #define MESG_EXT_RESPONSE_ID                 ((uint16_t)0xE000) ///< Reserved for future use. ANT response messages using extended message IDs
+
 // 0xE1 extended IDs
 #define MESG_EXT_REQUEST_ID                  ((uint16_t)0xE100) ///< Reserved for future use. ANT request messages using extended message IDs
+
+
+// 0xE3 extended IDs
+#define MESG_SET_SYNC_SERIAL_BIT_RATE        ((uint16_t)0xE300) ///< ANT application - configure byte synchronous serial interface bit rate
+#define MESG_SET_SYNC_SERIAL_SRDY_SLEEP      ((uint16_t)0xE301) ///< ANT application - configure byte synchronous serial interface SRDY sleep delay
+
+// 0xE4 extended IDs
+#define MESG_ANTFS_OTA_FW_UPDATE             ((uint16_t)0xE400) ///< ANT application - run ANTFS over-the-air (OTA) device firmware update
 /** @} */
 
 //////////////////////////////////////////////

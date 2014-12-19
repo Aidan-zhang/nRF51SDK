@@ -2,7 +2,7 @@
  * Dynastream Innovations Inc.
  * Cochrane, AB, CANADA
  *
- * Copyright (c) 2012 Dynastream Innovations Inc.
+ * Copyright (c) 2014 Dynastream Innovations Inc.
  * THIS SOFTWARE IS AN EXAMPLE USAGE OF THE ANT PROTOCOL MODULE.
  * IT MAY BE USED, MODIFIED and DISTRIBUTED ONLY WITH THE
  * APPROPRIATE LICENSE AGREEMENT.
@@ -27,32 +27,29 @@
 
 /** @brief ANT Stack API SVC numbers */
 enum {
-  ////////////////////////////////////
-  // INITIAL SVC COMMANDS - AXX0.03B00
-  ////////////////////////////////////
-  /*ant re/initialization*/
-  SVC_ANT_STACK_INIT = STK_SVC_BASE_2, // SVC base changed AXX2.00B00
-  /*event api*/
+  /*ant re/initialization API*/
+  SVC_ANT_STACK_INIT = STK_SVC_BASE_2,
+  /*event API*/
   SVC_ANT_EVENT_GET,
-  /*channel control*/
+  /*channel control API*/
   SVC_ANT_CHANNEL_ASSIGN,
   SVC_ANT_CHANNEL_UNASSIGN,
   SVC_ANT_CHANNEL_OPEN,
   SVC_ANT_CHANNEL_CLOSE,
-  SVC_ANT_RX_SCAN_MODE_START, // api modified AXX1.02B01
-  /*data api*/
+  SVC_ANT_RX_SCAN_MODE_START,
+  /*data APIs*/
   SVC_ANT_TX_BROADCAST_MESSAGE,
   SVC_ANT_TX_ACKNOWLEDGED_MESSAGE,
   SVC_ANT_BURST_HANDLER_REQUEST,
   SVC_ANT_PENDING_TRANSMIT_CLEAR,
   SVC_ANT_TRANSFER_STOP,
-  /*radio configuration api*/
+  /*radio configuration APIs*/
   SVC_ANT_NETWORK_KEY_SET,
   SVC_ANT_CHANNEL_RADIO_FREQ_SET,
   SVC_ANT_CHANNEL_RADIO_FREQ_GET,
-  SVC_ANT_CHANNEL_RADIO_TX_POWER_SET, // api modified AXX1.06B02
+  SVC_ANT_CHANNEL_RADIO_TX_POWER_SET,
   SVC_ANT_PROX_SEARCH_SET,
-  /*configuration api*/
+  /*configuration APIs*/
   SVC_ANT_CHANNEL_PERIOD_SET,
   SVC_ANT_CHANNEL_PERIOD_GET,
   SVC_ANT_CHANNEL_ID_SET,
@@ -60,8 +57,8 @@ enum {
   SVC_ANT_SEARCH_WAVEFORM_SET,
   SVC_ANT_CHANNEL_RX_SEARCH_TIMEOUT_SET,
   SVC_ANT_SEARCH_CHANNEL_PRIORITY_SET,
-  SVC_ANT_ACTIVE_SEARCH_SHARING_CYCLES_SET, // api modified AXX1.02B09
-  SVC_ANT_ACTIVE_SEARCH_SHARING_CYCLES_GET, // api modified AXX1.02B09
+  SVC_ANT_ACTIVE_SEARCH_SHARING_CYCLES_SET,
+  SVC_ANT_ACTIVE_SEARCH_SHARING_CYCLES_GET,
   SVC_ANT_CHANNEL_LOW_PRIO_RX_SEARCH_TIMEOUT_SET,
   SVC_ANT_ADV_BURST_CONFIG_SET,
   SVC_ANT_ADV_BURST_CONFIG_GET,
@@ -73,67 +70,49 @@ enum {
   SVC_ANT_AUTO_FREQ_HOP_TABLE_SET,
   SVC_ANT_EVENT_FILTERING_SET,
   SVC_ANT_EVENT_FILTERING_GET,
-  /*status api*/
+  /*status APIs*/
   SVC_ANT_ACTIVE,
   SVC_ANT_CHANNEL_IN_PROGRESS,
   SVC_ANT_CHANNEL_STATUS_GET,
   SVC_ANT_PENDING_TRANSMIT,
-  /*radio test api*/
+  /*radio test APIs*/
   SVC_ANT_INIT_CW_TEST_MODE,
-  SVC_ANT_CW_TEST_MODE, // api modified AXX1.06B02
-  /*antstack version*/
+  SVC_ANT_CW_TEST_MODE,
+  /*antstack version API*/
   SVC_ANT_VERSION,
-  /*antstack capabilities*/
+  /*antstack capabilities API*/
   SVC_ANT_CAPABILITIES,
-  ////////////////////////////////////
-  // ADDED SVC COMMANDS - AXX0.04B00
-  ////////////////////////////////////
-  /*data api*/
+  /*more data APIs*/
   SVC_ANT_BURST_HANDLER_WAIT_FLAG_ENABLE,
   SVC_ANT_BURST_HANDLER_WAIT_FLAG_DISABLE,
-  ////////////////////////////////////
-  // ADDED SVC COMMANDS - AXX0.04B01
-  ////////////////////////////////////
-  /*configuration api*/
+  /*more configuration APIs*/
   SVC_ANT_SDU_MASK_SET,
   SVC_ANT_SDU_MASK_GET,
   SVC_ANT_SDU_MASK_CONFIG,
-  SVC_ANT_CRYPTO_CHANNEL_ENABLE, // api modified AXX1.02B00
+  SVC_ANT_CRYPTO_CHANNEL_ENABLE,
   SVC_ANT_CRYPTO_KEY_SET,
   SVC_ANT_CRYPTO_INFO_SET,
   SVC_ANT_CRYPTO_INFO_GET,
-  ////////////////////////////////////
-  // ADDED SVC COMMANDS - AXX0.04B03
-  ////////////////////////////////////
-  /*configuration api*/
   SVC_ANT_RFACTIVE_NOTIFICATION_CONFIG_SET,
   SVC_ANT_RFACTIVE_NOTIFICATION_CONFIG_GET,
-  ////////////////////////////////////
-  // ADDED SVC COMMANDS - AXX1.02B01
-  ////////////////////////////////////
-  /*configuration api*/
-  SVC_ANT_COEX_CONFIG_SET, // api modified AXX1.06B02
-  SVC_ANT_COEX_CONFIG_GET, // api modified AXX1.06B02
-  ////////////////////////////////////
-  // ADDED SVC COMMANDS - AXX1.06B02
-  ////////////////////////////////////
-  /*reserved*/
+  SVC_ANT_COEX_CONFIG_SET,
+  SVC_ANT_COEX_CONFIG_GET,
+  /*reserved APIs*/
   SVC_ANT_RESERVED0,
   SVC_ANT_RESERVED1,
   SVC_ANT_RESERVED2,
-  /*extended apis*/
+  /*extended APIs*/
   SVC_ANT_EXTENDED0,
   SVC_ANT_EXTENDED1,
   SVC_ANT_EXTENDED2, // LAST (64 SVCs)
 };
 
-////////////////////////////////////
-// INITIAL SVC COMMANDS - AXX0.03B00
-////////////////////////////////////
 /******************************************************************************/
 /** @name ANT API functions
   * @{ */
 /******************************************************************************/
+
+/******************************* RE/INITIALIZATION API *******************************/
 
 /** @brief Function for initializing or re-initializing ANT Stack.
  *
@@ -157,7 +136,7 @@ SVCALL(SVC_ANT_STACK_INIT, uint32_t, sd_ant_stack_reset (void));
  */
 SVCALL(SVC_ANT_EVENT_GET, uint32_t, sd_ant_event_get (uint8_t *pucChannel, uint8_t *pucEvent, uint8_t *aucANTMesg));
 
-/********************** CHANNEL CONTROL API ******************************/
+/********************** CHANNEL CONTROL APIS ******************************/
 
 /** @brief This function assigns and initializes a new channel.
  *
@@ -167,9 +146,9 @@ SVCALL(SVC_ANT_EVENT_GET, uint32_t, sd_ant_event_get (uint8_t *pucChannel, uint8
  * @param[in] ucExtAssign is a bit field (1 octet) for an extended assign. See Ext. Assign Channel Parameters in ant_parameters.h.
  *
  * @return  ::NRF_SUCCESS
- *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
- *          ::NRF_ANT_ERROR_INVALID_NETWORK_NUMBER
  *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
+ *          ::NRF_ANT_ERROR_INVALID_NETWORK_NUMBER
+ *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
  */
 SVCALL(SVC_ANT_CHANNEL_ASSIGN, uint32_t, sd_ant_channel_assign (uint8_t ucChannel, uint8_t ucChannelType, uint8_t ucNetwork, uint8_t ucExtAssign));
 
@@ -178,6 +157,7 @@ SVCALL(SVC_ANT_CHANNEL_ASSIGN, uint32_t, sd_ant_channel_assign (uint8_t ucChanne
  * @param[in] ucChannel is an unsigned char (1 octet) denoting the channel to unassign.
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
  */
 SVCALL(SVC_ANT_CHANNEL_UNASSIGN, uint32_t, sd_ant_channel_unassign (uint8_t ucChannel));
@@ -187,6 +167,7 @@ SVCALL(SVC_ANT_CHANNEL_UNASSIGN, uint32_t, sd_ant_channel_unassign (uint8_t ucCh
  * @param[in] ucChannel is an unsigned char (1 octet) denoting the channel to open.
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
  */
 SVCALL(SVC_ANT_CHANNEL_OPEN, uint32_t, sd_ant_channel_open(uint8_t ucChannel));
@@ -196,6 +177,7 @@ SVCALL(SVC_ANT_CHANNEL_OPEN, uint32_t, sd_ant_channel_open(uint8_t ucChannel));
  * @param[in] ucChannel is an unsigned char (1 octet) denoting the channel to close.
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
  *
  */
@@ -206,12 +188,12 @@ SVCALL(SVC_ANT_CHANNEL_CLOSE, uint32_t, sd_ant_channel_close (uint8_t ucChannel)
  * @param[in] ucSyncChannelPacketsOnly is an unsigned char (1 octet) denoting synchronous channel only scanning mode. 0 = disable, 1 = enable.
  *
  * @return  ::NRF_SUCCESS
- *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
  *          ::NRF_ANT_ERROR_CLOSE_ALL_CHANNELS
+ *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
  */
 SVCALL(SVC_ANT_RX_SCAN_MODE_START, uint32_t, sd_ant_rx_scan_mode_start (uint8_t ucSyncChannelPacketsOnly));
 
-/*********************** DATA API ****************************************/
+/*********************** DATA APIS ****************************************/
 
 /** @brief This function is used to set broadcast data for transmission.
  *
@@ -221,6 +203,7 @@ SVCALL(SVC_ANT_RX_SCAN_MODE_START, uint32_t, sd_ant_rx_scan_mode_start (uint8_t 
  *
  * @return  ::NRF_SUCCESS
  *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  *          ::NRF_ANT_ERROR_MESSAGE_SIZE_EXCEEDS_LIMIT
  *          ::NRF_ANT_ERROR_INVALID_SCAN_TX_CHANNEL
  *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
@@ -237,6 +220,7 @@ SVCALL(SVC_ANT_TX_BROADCAST_MESSAGE, uint32_t, sd_ant_broadcast_message_tx (uint
  *
  * @return  ::NRF_SUCCESS
  *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  *          ::NRF_ANT_ERROR_MESSAGE_SIZE_EXCEEDS_LIMIT
  *          ::NRF_ANT_ERROR_INVALID_SCAN_TX_CHANNEL
  *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
@@ -258,14 +242,15 @@ SVCALL(SVC_ANT_TX_ACKNOWLEDGED_MESSAGE, uint32_t, sd_ant_acknowledge_message_tx 
  *
  * @return  ::NRF_SUCCESS
  *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
+ *          ::NRF_ANT_ERROR_INVALID_SCAN_TX_CHANNEL
+ *          ::NRF_ANT_ERROR_CHANNEL_NOT_OPENED
  *          ::NRF_ANT_ERROR_TRANSFER_SEQUENCE_NUMBER_ERROR
  *          ::NRF_ANT_ERROR_TRANSFER_IN_PROGRESS
- *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
- *          ::NRF_ANT_ERROR_TRANSFER_BUSY
  *          ::NRF_ANT_ERROR_TRANSFER_IN_ERROR
  *          ::NRF_ANT_ERROR_MESSAGE_SIZE_EXCEEDS_LIMIT
- *          ::NRF_ANT_ERROR_INVALID_SCAN_TX_CHANNEL
  *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
+ *          ::NRF_ANT_ERROR_TRANSFER_BUSY
  */
 SVCALL(SVC_ANT_BURST_HANDLER_REQUEST, uint32_t, sd_ant_burst_handler_request(uint8_t ucChannel, uint16_t usSize, uint8_t *aucData, uint8_t ucBurstSegment));
 
@@ -276,6 +261,7 @@ SVCALL(SVC_ANT_BURST_HANDLER_REQUEST, uint32_t, sd_ant_burst_handler_request(uin
  *
  * @return  ::NRF_SUCCESS
  *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_PENDING_TRANSMIT_CLEAR, uint32_t, sd_ant_pending_transmit_clear (uint8_t ucChannel, uint8_t *pucSuccess));
 
@@ -287,7 +273,7 @@ SVCALL(SVC_ANT_PENDING_TRANSMIT_CLEAR, uint32_t, sd_ant_pending_transmit_clear (
  */
 SVCALL(SVC_ANT_TRANSFER_STOP, uint32_t, sd_ant_transfer_stop (void));
 
-/********************** RADIO CONFIGURATION API **************************/
+/********************** RADIO CONFIGURATION APIS **************************/
 
 /** @brief This function sets the 64bit network address.
  *
@@ -295,6 +281,8 @@ SVCALL(SVC_ANT_TRANSFER_STOP, uint32_t, sd_ant_transfer_stop (void));
  * @param[in] aucNetworkKey is the pointer to location of the Network Key (8 octets in length)
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_NETWORK_NUMBER
  */
 SVCALL(SVC_ANT_NETWORK_KEY_SET, uint32_t, sd_ant_network_address_set (uint8_t ucNetwork, uint8_t *aucNetworkKey));
 
@@ -304,7 +292,7 @@ SVCALL(SVC_ANT_NETWORK_KEY_SET, uint32_t, sd_ant_network_address_set (uint8_t uc
  * @param[in] ucFreq is an unsigned char (1 octet) denoting the radio frequency offset from 2400MHz (eg. 2466MHz, ucFreq = 66).
  *
  * @return  ::NRF_SUCCESS
- *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_NETWORK_NUMBER
  */
 SVCALL(SVC_ANT_CHANNEL_RADIO_FREQ_SET, uint32_t, sd_ant_channel_radio_freq_set (uint8_t ucChannel, uint8_t ucFreq));
 
@@ -314,6 +302,8 @@ SVCALL(SVC_ANT_CHANNEL_RADIO_FREQ_SET, uint32_t, sd_ant_channel_radio_freq_set (
  * @param[out] pucRfreq is the pointer to an unsigned char (1 octet) where the frequency will be stored.
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_CHANNEL_RADIO_FREQ_GET, uint32_t, sd_ant_channel_radio_freq_get (uint8_t ucChannel, uint8_t *pucRfreq));
 
@@ -324,7 +314,7 @@ SVCALL(SVC_ANT_CHANNEL_RADIO_FREQ_GET, uint32_t, sd_ant_channel_radio_freq_get (
  * @param[in] ucCustomTxPower is an unsigned char (1 octet) denoting the custom nRF transmit power as defined in nrf51_bitfields.h. Only applicable if ucTxPower is set to custom tx power selection.
  *
  * @return  ::NRF_SUCCESS
- *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_CHANNEL_RADIO_TX_POWER_SET, uint32_t, sd_ant_channel_radio_tx_power_set (uint8_t ucChannel, uint8_t ucTxPower, uint8_t ucCustomTxPower));
 
@@ -332,12 +322,14 @@ SVCALL(SVC_ANT_CHANNEL_RADIO_TX_POWER_SET, uint32_t, sd_ant_channel_radio_tx_pow
  *
  * @param[in] ucChannel is an unsigned char (1 octet) denoting the channel number.
  * @param[in] ucProxThreshold is an unsigned char (1 octet) denoting the minimum RSSI threshold required for acquisition during a search. See Radio Proximity Search Threshold in ant_parameters.h
+ * @param[in] ucCustomProxThreshold is an unsigned char (1 octet) denoting the custom minimum RSSI threshold for acquisition during a search. Only applicable if ucProxThreshold is set to custom proximity selection.
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
-SVCALL(SVC_ANT_PROX_SEARCH_SET, uint32_t, sd_ant_prox_search_set (uint8_t ucChannel, uint8_t ucProxThreshold));
+SVCALL(SVC_ANT_PROX_SEARCH_SET, uint32_t, sd_ant_prox_search_set (uint8_t ucChannel, uint8_t ucProxThreshold, uint8_t ucCustomProxThreshold));
 
-/********************** CONFIGURATION API ********************************/
+/********************** CONFIGURATION APIS ********************************/
 
 /** @brief This function sets the channel period.
  *
@@ -345,6 +337,7 @@ SVCALL(SVC_ANT_PROX_SEARCH_SET, uint32_t, sd_ant_prox_search_set (uint8_t ucChan
  * @param[in] usPeriod is an unsigned short (2 octets) denoting the period in 32 kHz counts (usPeriod/32768 s).
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_CHANNEL_PERIOD_SET, uint32_t, sd_ant_channel_period_set (uint8_t ucChannel, uint16_t usPeriod));
 
@@ -355,6 +348,7 @@ SVCALL(SVC_ANT_CHANNEL_PERIOD_SET, uint32_t, sd_ant_channel_period_set (uint8_t 
  *
  * @return  ::NRF_SUCCESS
  *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_CHANNEL_PERIOD_GET, uint32_t, sd_ant_channel_period_get (uint8_t ucChannel, uint16_t *pusPeriod));
 
@@ -366,6 +360,7 @@ SVCALL(SVC_ANT_CHANNEL_PERIOD_GET, uint32_t, sd_ant_channel_period_get (uint8_t 
  * @param[in] ucTransmitType is an unsigned char (1 octet) denoting the transmission type.
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_CHANNEL_ID_SET, uint32_t, sd_ant_channel_id_set (uint8_t ucChannel, uint16_t usDeviceNumber, uint8_t ucDeviceType, uint8_t ucTransmitType));
 
@@ -378,6 +373,7 @@ SVCALL(SVC_ANT_CHANNEL_ID_SET, uint32_t, sd_ant_channel_id_set (uint8_t ucChanne
  *
  * @return  ::NRF_SUCCESS
  *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_CHANNEL_ID_GET, uint32_t, sd_ant_channel_id_get (uint8_t ucChannel, uint16_t *pusDeviceNumber, uint8_t *pucDeviceType, uint8_t *pucTransmitType));
 
@@ -387,6 +383,7 @@ SVCALL(SVC_ANT_CHANNEL_ID_GET, uint32_t, sd_ant_channel_id_get (uint8_t ucChanne
  * @param[in] usWaveform is an unsigned short (2 octets) denoting the channel waveform period (usWaveform/32768 s). Default = 316.
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_SEARCH_WAVEFORM_SET, uint32_t, sd_ant_search_waveform_set (uint8_t ucChannel, uint16_t usWaveform));
 
@@ -396,6 +393,7 @@ SVCALL(SVC_ANT_SEARCH_WAVEFORM_SET, uint32_t, sd_ant_search_waveform_set (uint8_
  * @param[in] ucTimeout is an unsigned char (1 octet) denoting the timeout value in 2.5 second increments. Default = 10 (25s).
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_CHANNEL_RX_SEARCH_TIMEOUT_SET, uint32_t, sd_ant_channel_rx_search_timeout_set (uint8_t ucChannel, uint8_t ucTimeout));
 
@@ -405,6 +403,7 @@ SVCALL(SVC_ANT_CHANNEL_RX_SEARCH_TIMEOUT_SET, uint32_t, sd_ant_channel_rx_search
  * @param[in] ucSearchPriority is an unsigned char (1 octet) denoting the search priority value. 0 to 7 (Default = 0).
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_SEARCH_CHANNEL_PRIORITY_SET, uint32_t, sd_ant_search_channel_priority_set (uint8_t ucChannel, uint8_t ucSearchPriority));
 
@@ -414,6 +413,7 @@ SVCALL(SVC_ANT_SEARCH_CHANNEL_PRIORITY_SET, uint32_t, sd_ant_search_channel_prio
  * @param[in] ucCycles is an unsigned char (1 octet) denoting the number of cycles to set.
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_ACTIVE_SEARCH_SHARING_CYCLES_SET, uint32_t, sd_ant_active_search_sharing_cycles_set (uint8_t ucChannel, uint8_t ucCycles));
 
@@ -424,6 +424,7 @@ SVCALL(SVC_ANT_ACTIVE_SEARCH_SHARING_CYCLES_SET, uint32_t, sd_ant_active_search_
  *
  * @return  ::NRF_SUCCESS
  *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_ACTIVE_SEARCH_SHARING_CYCLES_GET, uint32_t, sd_ant_active_search_sharing_cycles_get (uint8_t ucChannel, uint8_t *pucCycles));
 
@@ -433,6 +434,7 @@ SVCALL(SVC_ANT_ACTIVE_SEARCH_SHARING_CYCLES_GET, uint32_t, sd_ant_active_search_
  * @param[in] ucTimeout is an unsigned char (1 octet) denoting the timeout value in 2.5 seconds increments. Default = 2 (5s).
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_CHANNEL_LOW_PRIO_RX_SEARCH_TIMEOUT_SET, uint32_t, sd_ant_channel_low_priority_rx_search_timeout_set (uint8_t ucChannel, uint8_t ucTimeout));
 
@@ -471,7 +473,7 @@ SVCALL(SVC_ANT_ADV_BURST_CONFIG_SET, uint32_t, sd_ant_adv_burst_config_set (uint
  *         Byte8 = Advanced burst stalling count config MSB
  *         Byte9 = Advanced burst retry count cycle extension. Each count cycle represents 5 retries.
  *
- *         Returned structure is as folows for capabilities:
+ *         Returned structure is as follows for capabilities:
  *         Byte0 = Supported RF payload size. See Advanced Burst Configuration Defines in ant_parameters.h.
  *         Byte1 = Supported burst configurations. See Advanced Burst Configuration Defines in ant_parameters.h.
  *         Byte2 = 0, Reserved
@@ -499,7 +501,6 @@ SVCALL(SVC_ANT_LIB_CONFIG_SET, uint32_t, sd_ant_lib_config_set (uint8_t ucANTLib
  * @param[in] ucANTLibConfig is an unsigned char (1 octet) denoting the ANT lib Config bit(s) to clear. See ANT Library Config in ant_parameters.h.
  *
  * @return  ::NRF_SUCCESS
- *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_LIB_CONFIG_CLEAR, uint32_t, sd_ant_lib_config_clear (uint8_t ucANTLibConfig));
 
@@ -524,6 +525,7 @@ SVCALL(SVC_ANT_LIB_CONFIG_GET, uint32_t, sd_ant_lib_config_get (uint8_t *pucANTL
  *
  * @return  ::NRF_SUCCESS
  *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  *          ::NRF_ANT_ERROR_INVALID_LIST_ID
  */
 SVCALL(SVC_ANT_ID_LIST_ADD, uint32_t, sd_ant_id_list_add (uint8_t ucChannel, uint8_t *aucDevId, uint8_t ucListIndex));
@@ -535,6 +537,7 @@ SVCALL(SVC_ANT_ID_LIST_ADD, uint32_t, sd_ant_id_list_add (uint8_t ucChannel, uin
  * @param[in] ucIncExcFlag is an unsigned char (1 octet) denoting the type of list as Include(0) or Exclude(1)
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  *          ::NRF_ANT_ERROR_INVALID_LIST_ID
  */
 SVCALL(SVC_ANT_ID_LIST_CONFIG, uint32_t, sd_ant_id_list_config (uint8_t ucChannel, uint8_t ucIDListSize, uint8_t ucIncExcFlag));
@@ -547,6 +550,7 @@ SVCALL(SVC_ANT_ID_LIST_CONFIG, uint32_t, sd_ant_id_list_config (uint8_t ucChanne
  * @param[in] ucFreq2 is an unsigned char (1 octet) denoting the offset from 2400MHz of the 3rd frequency hop value.
  *
  * @return  ::NRF_SUCCESS
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_AUTO_FREQ_HOP_TABLE_SET, uint32_t, sd_ant_auto_freq_hop_table_set (uint8_t ucChannel, uint8_t ucFreq0, uint8_t ucFreq1, uint8_t ucFreq2));
 
@@ -567,7 +571,7 @@ SVCALL(SVC_ANT_EVENT_FILTERING_SET, uint32_t, sd_ant_event_filtering_set (uint16
  */
 SVCALL(SVC_ANT_EVENT_FILTERING_GET, uint32_t, sd_ant_event_filtering_get (uint16_t *pusFilter));
 
-/*************************** STATUS API **********************************/
+/*************************** STATUS APIS **********************************/
 
 /** @brief This function gets the ANT activity status.
  *
@@ -594,6 +598,7 @@ SVCALL(SVC_ANT_CHANNEL_IN_PROGRESS, uint32_t, sd_ant_channel_in_progress (uint8_
  *
  * @return  ::NRF_SUCCESS
  *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_CHANNEL_STATUS_GET, uint32_t, sd_ant_channel_status_get (uint8_t ucChannel, uint8_t *pucStatus));
 
@@ -604,10 +609,11 @@ SVCALL(SVC_ANT_CHANNEL_STATUS_GET, uint32_t, sd_ant_channel_status_get (uint8_t 
  *
  * @return  ::NRF_SUCCESS
  *          ::NRF_ERROR_INVALID_PARAM
+ *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_PENDING_TRANSMIT, uint32_t, sd_ant_pending_transmit (uint8_t ucChannel, uint8_t *pucPending));
 
-/*************************** TEST API **********************************/
+/*************************** TEST APIS **********************************/
 
 /** @brief This function initialize the stack to get ready for a continuous wave transmission test.
  *
@@ -622,10 +628,11 @@ SVCALL(SVC_ANT_INIT_CW_TEST_MODE, uint32_t, sd_ant_cw_test_mode_init (void));
  * @param[in] ucRadioFreq is an unsigned char (1 octet) denoting the radio frequency offset from 2400MHz for continuous wave mode. (eg. 2466MHz, ucRadioFreq = 66).
  * @param[in] ucTxPower is an unsigned char (1 octet) denoting the ANT transmit power index for continuous wave mode. See Radio TX Power Definitions in ant_parameters.h
  * @param[in] ucCustomTxPower is an unsigned char (1 octet) denoting the custom nRF transmit power as defined in nrf51_bitfields.h. Only applicable if ucTxPower is set to custom tx power selection.
+ * @param[in] ucMode is an unsigned char (1 octet) denoting test mode type where 0 = cw tx carrier transmission, 1 = cw tx modulated transmission
  *
  * @return  ::NRF_SUCCESS
  */
-SVCALL(SVC_ANT_CW_TEST_MODE, uint32_t, sd_ant_cw_test_mode (uint8_t ucRadioFreq, uint8_t ucTxPower, uint8_t ucCustomTxPower));
+SVCALL(SVC_ANT_CW_TEST_MODE, uint32_t, sd_ant_cw_test_mode (uint8_t ucRadioFreq, uint8_t ucTxPower, uint8_t ucCustomTxPower, uint8_t ucMode));
 
 /** @brief This function gets the version string of the ANT stack.
  *
@@ -653,11 +660,7 @@ SVCALL(SVC_ANT_VERSION, uint32_t, sd_ant_version_get (uint8_t* aucVersion));
  */
 SVCALL(SVC_ANT_CAPABILITIES, uint32_t, sd_ant_capabilities_get (uint8_t* aucCapabilities));
 
-////////////////////////////////////
-// ADDED SVC COMMANDS - AXX0.04B00
-////////////////////////////////////
-
-/*********************** DATA API ****************************************/
+/*********************** MORE DATA APIS ****************************************/
 
 /** @brief This function assigns a wait variable to the the burst handler. When the input buffer is locked by the handler the wait flag is set to 1. When the
  *         input buffer is unlocked, the wait flag is set to 0. When a wait flag is assigned, EVENT_TRANSFER_NEXT_DATA_BLOCK events will not
@@ -682,11 +685,7 @@ SVCALL(SVC_ANT_BURST_HANDLER_WAIT_FLAG_ENABLE, uint32_t, sd_ant_burst_handler_wa
  */
 SVCALL(SVC_ANT_BURST_HANDLER_WAIT_FLAG_DISABLE, uint32_t, sd_ant_burst_handler_wait_flag_disable (void));
 
-////////////////////////////////////
-// ADDED SVC COMMANDS - AXX0.04B01
-////////////////////////////////////
-
-/********************** CONFIGURATION API ********************************/
+/********************** MORE CONFIGURATION API ********************************/
 
 /** @brief This function is used to assign a selective data update (SDU) mask (8 octets) to an identifier, ucMask.
  *
@@ -716,15 +715,13 @@ SVCALL(SVC_ANT_SDU_MASK_GET, uint32_t, sd_ant_sdu_mask_get (uint8_t ucMask, uint
  * @param[in] ucMaskConfig is an unsigned char (1 octet) denoting SDU mask configuration. See Selective Data Update Mask Configuration Defines in ant_parameters.h.
  *
  * @return  ::NRF_SUCCESS
- *          ::NRF_ERROR_INVALID_PARAM
  *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  */
 SVCALL(SVC_ANT_SDU_MASK_CONFIG, uint32_t, sd_ant_sdu_mask_config (uint8_t ucChannel, uint8_t ucMaskConfig));
 
 /** @brief This function enables/disables 128-bit AES encryption mode to the specified channel. Advanced burst must be enabled beforehand to enable encrypted channel.
- *         Currently, encryption supports configured advanced burst RF payload size 1 or 2 and can only be enabled for 1 ANT channel.
  *
- * @param[in] ucChannel is an unsigned char (1 octet) denoting the channel in which encrpytion mode is set.
+ * @param[in] ucChannel is an unsigned char (1 octet) denoting the channel in which encryption mode is set.
  * @param[in] ucEnable is an unsigned char (1 octet) denoting the encryption mode. See Encrypted Channel Defines in ant_parameters.h.
  * @param[in] ucKeyNum is an unsigned char (1 octet) denoting the key index of the 128-bit key to be used for encryption. Currently, only key index 0 can be used.
  * @param[in] ucDecimationRate is an unsigned char (1 octet) denoting the decimate rate to apply for encrypted slave channel. Must be > 0.
@@ -733,12 +730,12 @@ SVCALL(SVC_ANT_SDU_MASK_CONFIG, uint32_t, sd_ant_sdu_mask_config (uint8_t ucChan
  *          ::NRF_ANT_ERROR_INVALID_PARAMETER_PROVIDED
  *          ::NRF_ANT_ERROR_INVALID_SCAN_TX_CHANNEL
  *          ::NRF_ANT_ERROR_CHANNEL_NOT_OPENED
- *          ::NRF_ANT_ERROR_MESSAGE_SIZE_EXCEEDS_LIMIT
- *          ::NRF_ANT_ERROR_TRANSFER_IN_PROGRESS
  *          ::NRF_ANT_ERROR_TRANSFER_SEQUENCE_NUMBER_ERROR
+ *          ::NRF_ANT_ERROR_TRANSFER_IN_PROGRESS
  *          ::NRF_ANT_ERROR_TRANSFER_IN_ERROR
- *          ::NRF_ANT_ERROR_TRANSFER_BUSY
+ *          ::NRF_ANT_ERROR_MESSAGE_SIZE_EXCEEDS_LIMIT
  *          ::NRF_ANT_ERROR_CHANNEL_IN_WRONG_STATE
+ *          ::NRF_ANT_ERROR_TRANSFER_BUSY
  */
 SVCALL(SVC_ANT_CRYPTO_CHANNEL_ENABLE, uint32_t, sd_ant_crypto_channel_enable (uint8_t ucChannel, uint8_t ucEnable, uint8_t ucKeyNum, uint8_t ucDecimationRate));
 
@@ -774,12 +771,6 @@ SVCALL(SVC_ANT_CRYPTO_INFO_SET, uint32_t, sd_ant_crypto_info_set (uint8_t ucType
  */
 SVCALL(SVC_ANT_CRYPTO_INFO_GET, uint32_t, sd_ant_crypto_info_get (uint8_t ucType, uint8_t *aucInfo));
 
-////////////////////////////////////
-// ADDED SVC COMMANDS - AXX0.04B03
-////////////////////////////////////
-
-/********************** CONFIGURATION API ********************************/
-
  /** @brief This function enables/disables event notifications to be generated to the application indicating the time to the next ANT radio activity exceeds the configured time threshold.
  *          Latency (delay in event notification being received and processed by application) must be taken into account if attempting to use this generated event to perform
  *          operations prior to the radio activity. Cannot be used if asynchronous tx channel is assigned or used. Please note that this only generates events for ANT radio activity.
@@ -802,12 +793,6 @@ SVCALL(SVC_ANT_RFACTIVE_NOTIFICATION_CONFIG_SET, uint32_t, sd_ant_rfactive_notif
  *          ::NRF_ERROR_INVALID_PARAM
  */
 SVCALL(SVC_ANT_RFACTIVE_NOTIFICATION_CONFIG_GET, uint32_t, sd_ant_rfactive_notification_config_get (uint8_t *pucMode, uint16_t *pusTimeThreshold));
-
-////////////////////////////////////
-// ADDED SVC COMMANDS - AXX1.02B01
-////////////////////////////////////
-
-/********************** CONFIGURATION API ********************************/
 
  /** @brief This function sets ANT radio coexistence behaviour. Supported only if ANT is sharing radio HW concurrently with another wireless protocol.
  *          Configuration structure is as follows:
@@ -854,10 +839,6 @@ SVCALL(SVC_ANT_COEX_CONFIG_SET, uint32_t, sd_ant_coex_config_set (uint8_t ucChan
  *          ::NRF_ERROR_INVALID_PARAM
  */
 SVCALL(SVC_ANT_COEX_CONFIG_GET, uint32_t, sd_ant_coex_config_get (uint8_t ucChannel, uint8_t *aucCoexConfig, uint8_t *aucAdvCoexConfig));
-
-////////////////////////////////////
-// ADDED SVC COMMANDS - AXX1.06B02
-////////////////////////////////////
 
 /** @brief Extended0 ANT SVCs. Access extended SVC functions via ucExtID
 *

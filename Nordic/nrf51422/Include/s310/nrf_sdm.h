@@ -9,9 +9,9 @@
 /**
   @defgroup nrf_sdm_api SoftDevice Manager API
   @{
-     
+
   @brief APIs for SoftDevice management.
- 
+
 */
 
 /* Header guard */
@@ -27,7 +27,7 @@
  * @{ */
 
 /**@brief SoftDevice Manager SVC Base number. */
-#define SDM_SVC_BASE 0x10   
+#define SDM_SVC_BASE  (0x10)
 
 /** @} */
 
@@ -40,7 +40,7 @@ enum NRF_SD_SVCS
   SD_SOFTDEVICE_ENABLE = SDM_SVC_BASE, /**< ::sd_softdevice_enable */
   SD_SOFTDEVICE_DISABLE,               /**< ::sd_softdevice_disable */
   SD_SOFTDEVICE_IS_ENABLED,            /**< ::sd_softdevice_is_enabled */
-  SD_SOFTDEVICE_FORWARD_TO_APPLICATION,/**< ::sd_softdevice_forward_to_application */
+  SD_SOFTDEVICE_VECTOR_TABLE_BASE_SET, /**< ::sd_softdevice_vector_table_base_set */
   SVC_SDM_LAST                         /**< Placeholder for last SDM SVC */
 };
 
@@ -62,6 +62,11 @@ enum NRF_CLOCK_LFCLKSRCS
   NRF_CLOCK_LFCLKSRC_RC_250_PPM_2000MS_CALIBRATION,       /**< LFCLK RC oscillator, 2000ms calibration interval.*/
   NRF_CLOCK_LFCLKSRC_RC_250_PPM_4000MS_CALIBRATION,       /**< LFCLK RC oscillator, 4000ms calibration interval.*/
   NRF_CLOCK_LFCLKSRC_RC_250_PPM_8000MS_CALIBRATION,       /**< LFCLK RC oscillator, 8000ms calibration interval.*/
+  NRF_CLOCK_LFCLKSRC_RC_250_PPM_TEMP_1000MS_CALIBRATION,  /**< LFCLK RC oscillator. Temperature checked every 1000ms, if changed above a threshold, a calibration is done.*/
+  NRF_CLOCK_LFCLKSRC_RC_250_PPM_TEMP_2000MS_CALIBRATION,  /**< LFCLK RC oscillator. Temperature checked every 2000ms, if changed above a threshold, a calibration is done.*/
+  NRF_CLOCK_LFCLKSRC_RC_250_PPM_TEMP_4000MS_CALIBRATION,  /**< LFCLK RC oscillator. Temperature checked every 4000ms, if changed above a threshold, a calibration is done.*/
+  NRF_CLOCK_LFCLKSRC_RC_250_PPM_TEMP_8000MS_CALIBRATION,  /**< LFCLK RC oscillator. Temperature checked every 8000ms, if changed above a threshold, a calibration is done.*/
+  NRF_CLOCK_LFCLKSRC_RC_250_PPM_TEMP_16000MS_CALIBRATION, /**< LFCLK RC oscillator. Temperature checked every 16000ms, if changed above a threshold, a calibration is done.*/
 };
 
 /** @} */
@@ -80,7 +85,7 @@ typedef uint32_t nrf_clock_lfclksrc_t;
  * perform a reset, using e.g. CMSIS NVIC_SystemReset().
  *
  * @note This callback is executed in HardFault context, thus SVC functions cannot be called from the SoftDevice assert callback.
- *       
+ *
  * @param[in] pc The program counter of the failed assert.
  * @param[in] line_number Line number where the assert failed.
  * @param[in] file_name File name where the assert failed.
@@ -102,7 +107,7 @@ typedef void (*softdevice_assertion_handler_t)(uint32_t pc, uint16_t line_number
  *
  * @note This function has no effect when returning with an error.
  *
- * @post If return code is ::NRF_SUCCESS 
+ * @post If return code is ::NRF_SUCCESS
  *       - SoC library and protocol stack APIs are made available
  *       - A portion of RAM will be unavailable (see relevant SDS documentation)
  *       - Some peripherals will be unavailable or available only through the SoC API (see relevant SDS documentation)
@@ -121,7 +126,7 @@ typedef void (*softdevice_assertion_handler_t)(uint32_t pc, uint16_t line_number
 SVCALL(SD_SOFTDEVICE_ENABLE, uint32_t, sd_softdevice_enable(nrf_clock_lfclksrc_t clock_source, softdevice_assertion_handler_t assertion_handler));
 
 /**@brief Disables the SoftDevice and by extension the protocol stack.
- * 
+ *
  * Idempotent function to disable the SoftDevice.
  *
  * @post SoC library and protocol stack APIs are made unavailable.
@@ -143,16 +148,15 @@ SVCALL(SD_SOFTDEVICE_DISABLE, uint32_t, sd_softdevice_disable(void));
  */
 SVCALL(SD_SOFTDEVICE_IS_ENABLED, uint32_t, sd_softdevice_is_enabled(uint8_t * p_softdevice_enabled));
 
-/**@brief Start forwarding interrupts to application.
- * 
- * This function is only intended to be called when a bootloader is enabled is used.
- * The bootloader should call this right before it starts the application. 
- * It is recommended that all interrupt sources are off when this is called, 
- * or you could end up having interrupts in the application being executed before main() of the application.
+/**@brief Sets the base address of the interrupt vector table for interrupts forwarded from the SoftDevice
  *
+ * This function is only intended to be called when a bootloader is enabled.
+ *
+ * @param[in] address The base address of the interrupt vector table for forwarded interrupts.
+
  * @retval ::NRF_SUCCESS
  */
-SVCALL(SD_SOFTDEVICE_FORWARD_TO_APPLICATION, uint32_t, sd_softdevice_forward_to_application(void)); 
+SVCALL(SD_SOFTDEVICE_VECTOR_TABLE_BASE_SET, uint32_t, sd_softdevice_vector_table_base_set(uint32_t address));
 
 /** @} */
 
